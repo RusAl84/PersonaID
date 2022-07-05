@@ -26,9 +26,9 @@ class FaceDetector():
                 if draw:
                     img = self.fancyDraw(img, bbox)
 
-                    cv2.putText(img, f'{int(detection.score[0] * 100)}%',
-                                (bbox[0], bbox[1] - 20), cv2.FONT_HERSHEY_PLAIN,
-                                2, (255, 0, 255), 2)
+                    # cv2.putText(img, f'{int(detection.score[0] * 100)}%',
+                    #             (bbox[0], bbox[1] - 20), cv2.FONT_HERSHEY_PLAIN,
+                    #             2, (255, 0, 255), 2)
         return img, bboxs
 
     def fancyDraw(self, img, bbox, l=30, t=5, rt=1):

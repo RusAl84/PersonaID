@@ -13,17 +13,14 @@ camera = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streami
 detector = FaceDetector(0.7)
 # recognizer = FaceRecognizer("Faces",["Голованова","Горин","Григорьев","Кудж","Никонов","Русаков","Тимошенко","Трубиенко"])
 recognizer = FaceRecognizer("Faces", ["Горин", "Русаков"])
-every_nth_frame = 19
+every_nth_frame = 18
 detection_life = 5
 max_face_distance = 0.55
 
 
-# 'rtsp://freja.hiof.no:1935/rtplive/_definst_/hessdalen03.stream')  # use 0 for web camera
-#  for cctv camera use rtsp://username:password@ip_address:554/user=username_password='password'_channel=channel_number_stream=0.sdp' instead of camera
-# for local webcam use cv2.VideoCapture(0)
-
 def recognize(bboxs, frame):
-    print(recognizer.recognize(bboxs, frame, max_face_distance))
+    recognizer.recognize(bboxs, frame, max_face_distance)
+    # print(recognizer.recognize(bboxs, frame, max_face_distance))
 
 
 def gen_frames():  # generate frame by frame from camera
@@ -54,12 +51,11 @@ def gen_frames():  # generate frame by frame from camera
                 recognize(bboxs, frame)
                 # print("!")
 
+            # frame = cv2.resize(frame, (640, 360))
             frame = cv2.resize(frame, (1280, 720))
 
             ret, buffer = cv2.imencode('.jpg', frame)
-
             frame = buffer.tobytes()
-
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
