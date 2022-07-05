@@ -54,8 +54,12 @@ def gen_frames():  # generate frame by frame from camera
                 recognize(bboxs, frame)
                 # print("!")
 
+            frame = cv2.resize(frame, (1280, 720))
+
             ret, buffer = cv2.imencode('.jpg', frame)
+
             frame = buffer.tobytes()
+
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
 
