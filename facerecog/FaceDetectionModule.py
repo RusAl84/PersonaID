@@ -8,7 +8,8 @@ class FaceDetector():
         self.minDetectionCon = minDetectionCon
         self.mpFaceDetection = mp.solutions.face_detection
         self.mpDraw = mp.solutions.drawing_utils
-        self.faceDetection = self.mpFaceDetection.FaceDetection(min_detection_confidence=self.minDetectionCon,model_selection=1)
+        self.faceDetection = self.mpFaceDetection.FaceDetection(min_detection_confidence=self.minDetectionCon,
+                                                                model_selection=1)
 
     def findFaces(self, img, draw=True):
 
@@ -60,16 +61,14 @@ def main():
     detector = FaceDetector(0.5)
     success, img = cap.read()
 
-
     while success:
         cTime = time.time()
         fps = 1 / (cTime - pTime)
 
-        if cTime - pTime > 1./max_fps:
+        if cTime - pTime > 1. / max_fps:
             pTime = cTime
             img, bboxs = detector.findFaces(img)
             print(bboxs)
-
 
             cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 2)
             cv2.imshow("Image", img)
