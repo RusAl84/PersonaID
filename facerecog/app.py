@@ -7,12 +7,12 @@ from FaceRecognitionModule import FaceRecognizer
 
 app = Flask(__name__)
 
-# camera = cv2.VideoCapture(1)
-camera = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
+camera = cv2.VideoCapture(0)
+# camera = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
 # camera = cv2.VideoCapture("d://test1_5mp.mp4")
 detector = FaceDetector(0.7)
 # recognizer = FaceRecognizer("Faces",["Голованова","Горин","Григорьев","Кудж","Никонов","Русаков","Тимошенко","Трубиенко"])
-recognizer = FaceRecognizer("Faces", ["Горин", "Русаков"])
+recognizer = FaceRecognizer("Faces", ["Бакаев", "Горин", "Никонов", "Русаков"])
 every_nth_frame = 50
 detection_life = 8
 max_face_distance = 0.55
@@ -47,11 +47,11 @@ def gen_frames():
             if count == 0:
                 recognize(bboxs, frame)
 
-            cv2.imwrite("d:\\1.jpg",frame)
+            cv2.imwrite("d:\\1.jpg", frame)
             frame = cv2.resize(frame, (640, 360))
             # frame = cv2.resize(frame, (1280, 720))
             # frame = cv2.resize(frame, (1920, 1080))
-            cv2.imwrite("d:\\2.jpg",frame)
+            cv2.imwrite("d:\\2.jpg", frame)
             ret, buffer = cv2.imencode('.jpg', frame)
 
             frame = buffer.tobytes()
@@ -74,6 +74,7 @@ def index():
     # return render_template('index.html')
     # return render()
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
