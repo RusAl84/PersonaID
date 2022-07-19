@@ -3,28 +3,31 @@ from time import sleep
 import struct
 import redis
 import numpy as np
-
+import datetime
 
 def fromRedis(r):
     data = r.zrange("z1frame", 0, -1, withscores=True)
     # data = r.zrange("z1frame", 0, -1)
-    score = data[1][1]
-    data = data[0]
-    # print(data)
-#     r.zrem("z1frame", score)
-    r.zremrangebyscore("z1frame", int(score), int(score))
-    # print(score)
-    return data
+    img = []
+    if data:
+        score = int(data[0][1])
+        data = data[0][0]
+        r.zremrangebyscore("z1frame", score, score)
+        # print(score)
+        dt = datetime.datetime.fromtimestamp(score / 1000.0)
+        print(dt.time())
+        img = np.asarray(bytearray(data), dtype="uint8")
+        img = cv2.imdecode(img, cv2.IMREAD_COLOR)
+    return img
 
 
 if __name__ == '__main__':
-    # Redis connection
     r = redis.Redis(host='localhost', port=6379, db=0)
-
     key = 0
     while key != 27:
         img = fromRedis(r)
-        img = np.asarray(bytearray(img[0]), dtype="uint8")
-        img = cv2.imdecode(img, cv2.IMREAD_COLOR)
-        cv2.imshow("image", img)
+        if img != []:
+            # img = cv2.resize(img, (640, 360))
+            cv2.imshow("image", img)
         key = cv2.waitKey(1) & 0xFF
+    # cv2.destroyAllWindows()
