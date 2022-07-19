@@ -6,22 +6,8 @@ import time
 
 
 def toRedis(r, img):
-    """Store given Numpy array 'a' in Redis under key 'n'"""
-    # h, w = img.shape[:2]
-    # shape = struct.pack('>II', h, w)
-    # encoded = shape + img.tobytes()
-
-    # Store encoded data in Redis
-    # r.set(n, encoded)
-    #
-    # data = str(encoded)
-    _, bts = cv2.imencode('.jpg', frame)
-    data = bts.tobytes()
-    # data = cv2.imencode('.jpg', frame)[1].tobytes()
-    # with open('1.txt', 'w') as the_file:
-    #     the_file.write(str(data))
-    # data = np.array2string(img, precision=2, separator=',', suppress_small=True)
-
+    _, data = cv2.imencode('.jpg', frame)
+    data = data.tobytes()
     score = time.time_ns()
     r.zadd("z1frame", {data: score})
     return
