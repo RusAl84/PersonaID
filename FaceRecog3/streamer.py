@@ -15,7 +15,8 @@ def fromRedis(r):
         r.zremrangebyscore("z1frame", score, score)
         # print(score)
         dt = datetime.datetime.fromtimestamp(score / 1000.0)
-        print(dt.time())
+        now = datetime.datetime.now()
+        print(str(dt.time()) + " " + str(now))
         img = np.asarray(bytearray(data), dtype="uint8")
         img = cv2.imdecode(img, cv2.IMREAD_COLOR)
     return img
