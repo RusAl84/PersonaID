@@ -12,9 +12,7 @@ app = Flask(__name__)
 def fromRedis(r):
     data=[]
     # data = r.zrange("z1frame", 0, -1, withscores=True)
-    data = r.zrange("z1frame", 0, 1, withscores=True)
-
-    # data = r.zrange("z1frame", 0, -1)
+    data = r.zrange("z1frame", -2, -1, withscores=True)
     img = []
     if data:
         score = int(data[0][1])
@@ -34,7 +32,7 @@ def fromRedis(r):
 def gen_frames():
     count = 0
     r = redis.Redis(host='localhost', port=6379, db=0)
-    r.flushall()
+    # r.flushall()
     while True:
         img=[]
         img = fromRedis(r)
