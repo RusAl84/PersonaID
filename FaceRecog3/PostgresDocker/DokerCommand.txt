@@ -9,3 +9,13 @@ docker service ls
 Then, you can stop the service
 
 docker service rm <service id discovered with previous command>
+
+
+CREATE TABLE public.z1frame (
+    id bigint NOT NULL,
+    frame bytea,
+    milliseconds numeric,
+    timestr character(40)
+);
+
+ALTER USER personauser WITH PASSWORD 'pgpwd4persona';

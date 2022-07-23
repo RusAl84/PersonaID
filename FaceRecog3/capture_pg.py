@@ -5,18 +5,17 @@ from time import time
 
 
 def toPG(r, img):
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 40]
+    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
     _, data = cv2.imencode('.jpg', img, encode_param)
     frame = data.tobytes()
     milliseconds = int(time() * 1000)
     dt = datetime.datetime.fromtimestamp(milliseconds / 1000.0)
-    print(dt)
+    # print(dt)
     score = milliseconds
     cursor = connection.cursor()
     # Выполнение SQL-запроса для вставки данных в таблицу
     # insert_query = "INSERT INTO z1frame (id, frame, milliseconds ,timestr) VALUES (1, frame, milliseconds, dt)"
     # print(insert_query)
-
     sqlite_insert_with_param = """INSERT INTO z1frame
                           (frame, milliseconds ,timestr)
                           VALUES (%s, %s, %s);"""
