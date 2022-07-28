@@ -5,7 +5,7 @@ from time import time
 
 
 def toPG(r, img):
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
+    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 40]
     _, data = cv2.imencode('.jpg', img, encode_param)
     frame = data.tobytes()
     milliseconds = int(time() * 1000)
