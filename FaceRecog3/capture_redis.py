@@ -6,7 +6,7 @@ from time import time
 
 
 def toRedis(r, img):
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 40]
+    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
     _, data = cv2.imencode('.jpg', img, encode_param)
     data = data.tobytes()
     milliseconds = int(time() * 1000)

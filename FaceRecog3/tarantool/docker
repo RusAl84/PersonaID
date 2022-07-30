@@ -6,7 +6,17 @@ s = box.schema.space.create('tester')
 s:format({{name = 'id', type = 'unsigned'}, {name = 'frame', type = 'string'}, {name = 'milliseconds', type = 'unsigned'}, {name = 'timestr', type = 'string'}})
 s:create_index('primary', {type = 'tree', parts = {'id'}})
 
+s:format({{name = 'milliseconds', type = 'unsigned'}, {name = 'frame', type = 'string'}, {name = 'timestr', type = 'string'}})
+s:create_index('primary', {type = 'tree', parts = {'milliseconds'}})
+
 docker run -p 8000:80 quay.io/basis-company/tarantool-admin
 
-s:insert{1, 'Roxette', 1986, 'g'}
+s:insert{1, 'Roxette', 160000, 'g'}
+s:insert{2, 'dfdfdf', 160000, 'g'}
+s:insert{3, '6767887', 160000, 'g'}
 s:select{3}
+s:drop{1}
+s:count()
+s:len()
+box.space.tester:delete(1)
+s:auto_increment{'Roxette', 'g'}

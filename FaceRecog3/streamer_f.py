@@ -22,7 +22,7 @@ if __name__ == '__main__':
     while key != 27:
         img = fromF()
         if img != []:
-            img = cv2.resize(img, (960, 540))
+            # img = cv2.resize(img, (960, 540))
             # img = cv2.resize(img, (640, 360))
             cv2.imshow("image", img)
         key = cv2.waitKey(1) & 0xFF
