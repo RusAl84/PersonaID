@@ -8,6 +8,7 @@ import redis
 import numpy as np
 import datetime
 import psycopg2
+import time
 
 app = Flask(__name__)
 
@@ -23,7 +24,7 @@ def fromPG(connection):
         frame = datarecord[1]
         milliseconds = datarecord[2]
         timestr = datarecord[3]
-        cmilliseconds = int(time() * 1000)
+        cmilliseconds = int(time.time() * 1000)
         # if abs(milliseconds - cmilliseconds) > 5000:
         #     sql_delete_query = "Delete from public.z1frame"
         # else:
@@ -50,13 +51,13 @@ def gen_frames():
                                   port="5432",
                                   database="personadb")
     cursor = connection.cursor()
-    sql_delete_query = "Delete from public.z1frame"
+    sql_delete_query = "Delete from public.z1frame;"
     cursor.execute(sql_delete_query)
     connection.commit()
     while True:
         img=[]
         img = fromPG(connection)
-
+        time.sleep(0.001)
         if img != []:
             # print(img)
             # cv2.imshow("image", img)
@@ -69,7 +70,12 @@ def gen_frames():
             # print(frame)
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-
+            # time.sleep(0.01)
+            # length = str(len(img)).encode()
+            # yield (b'--frame\r\n'
+            #    b'Content-Type: image/jpeg\r\n'
+            #    b'Content-Length: ' + length + b'\r\n'
+            #                                   b'\r\n' + img + b'\r\n')
 
 
 
@@ -88,4 +94,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

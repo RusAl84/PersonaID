@@ -1,14 +1,14 @@
 import datetime
 import cv2
 import psycopg2
-from time import time
+import time
 import multiprocessing
 
 def toPG(r, img):
     encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
     _, data = cv2.imencode('.jpg', img, encode_param)
     frame = data.tobytes()
-    milliseconds = int(time() * 1000)
+    milliseconds = int(time.time() * 1000)
     dt = datetime.datetime.fromtimestamp(milliseconds / 1000.0)
     print(dt)
     score = milliseconds
@@ -45,7 +45,7 @@ if __name__ == '__main__':
             break
         # if cv2.waitKey(1) == ord('q'):
         #     break
-        # frame = cv2.resize(frame, (960, 540))
+        frame = cv2.resize(frame, (960, 540))
         if len(frame)>1:
             toPG(connection, frame)
         # multiprocessing.set_start_method('spawn')
@@ -54,6 +54,7 @@ if __name__ == '__main__':
         # p.start()
         # # print(q.get())
         # p.join()
+        # time.sleep(0.1)
     if connection:
         # cursor.close()
         connection.close()
