@@ -11,7 +11,6 @@ from vidgear.gears.asyncio.helper import reducer
 # initialize WebGear app without any source
 web = WebGear(logging=True)
 
-
 def fromPG(connection):
     cursor = connection.cursor()
     # data = r.zrange("z1frame", 0, -1)
@@ -48,9 +47,7 @@ async def my_frame_producer():
                                   port="5432",
                                   database="personadb")
     while True:
-
         encodedImage = fromPG(connection)
-
         if encodedImage:
             # yield frame in byte format
             # encodedImage = cv2.resize(encodedImage, (960, 540))
@@ -62,9 +59,7 @@ async def my_frame_producer():
 
 # add your custom frame producer to config
 web.config["generator"] = my_frame_producer
-
 # run this app on Uvicorn server at address http://localhost:8000/
 uvicorn.run(web(), host="localhost", port=8000)
-
 # close app safely
 web.shutdown()
