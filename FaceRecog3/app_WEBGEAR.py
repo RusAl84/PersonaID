@@ -1,5 +1,3 @@
-# import necessary libs
-
 import datetime
 import psycopg2
 import time
@@ -14,7 +12,7 @@ web = WebGear(logging=True)
 def fromPG(connection):
     cursor = connection.cursor()
     # data = r.zrange("z1frame", 0, -1)
-    postgreSQL_select_Query = "SELECT * FROM public.z1frame ORDER BY milliseconds ASC LIMIT 1"
+    postgreSQL_select_Query = "SELECT * FROM public.z2frame ORDER BY milliseconds ASC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
     img = []
@@ -28,38 +26,32 @@ def fromPG(connection):
         #     sql_delete_query = "Delete from public.z1frame"
         # else:
         #     sql_delete_query = "Delete from public.z1frame where id = " + str(id)
-        sql_delete_query = "Delete from public.z1frame where id = " + str(id)
+        sql_delete_query = "Delete from public.z2frame where id = " + str(id)
         cursor.execute(sql_delete_query)
         connection.commit()
-        dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
-        now = datetime.datetime.now()
-        print(str(dt.time()) + " " + str(now))
+        # dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
+        # now = datetime.datetime.now()
+        # print(str(dt.time()) + " " + str(now))
         img = bytearray(frame)
-
     return img
 
 # create your own custom frame producer
 async def my_frame_producer():
-    connection = psycopg2.connect(user="personauser",
-                                  # пароль, который указали при установке PostgreSQL
-                                  password="pgpwd4persona",
-                                  host="127.0.0.1",
-                                  port="5432",
+    connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
+    cursor = connection.cursor()
+    sql_delete_query = "Delete from public.z1frame"
+    cursor.execute(sql_delete_query)
+    connection.commit()
+    time.sleep(0.5)
     while True:
         encodedImage = fromPG(connection)
         if encodedImage:
-            # yield frame in byte format
             # encodedImage = cv2.resize(encodedImage, (960, 540))
             yield (b"--frame\r\nContent-Type:image/jpeg\r\n\r\n" + encodedImage + b"\r\n")
             await asyncio.sleep(0)
-    # close stream
     stream.release()
 
-
-# add your custom frame producer to config
 web.config["generator"] = my_frame_producer
-# run this app on Uvicorn server at address http://localhost:8000/
-uvicorn.run(web(), host="localhost", port=8000)
-# close app safely
+uvicorn.run(web(), host="localhost", port=8008)
 web.shutdown()

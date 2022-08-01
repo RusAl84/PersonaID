@@ -14,7 +14,7 @@ docker service rm <service id discovered with previous command>
 CREATE TABLE public.z1frame (
     id bigint NOT NULL,
     frame bytea,
-    milliseconds numeric,
+    milliseconds bigint,
     timestr character(40)
 );
 
