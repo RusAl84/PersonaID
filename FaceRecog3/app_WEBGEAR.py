@@ -1,5 +1,4 @@
 import datetime
-import psycopg2
 import time
 import psycopg2
 import uvicorn, asyncio, cv2
@@ -8,6 +7,8 @@ from vidgear.gears.asyncio.helper import reducer
 
 # initialize WebGear app without any source
 web = WebGear(logging=True)
+
+
 
 def fromPG(connection):
     cursor = connection.cursor()
@@ -29,9 +30,9 @@ def fromPG(connection):
         sql_delete_query = "Delete from public.z2frame where id = " + str(id)
         cursor.execute(sql_delete_query)
         connection.commit()
-        # dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
-        # now = datetime.datetime.now()
-        # print(str(dt.time()) + " " + str(now))
+        dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
+        now = datetime.datetime.now()
+        print(str(dt.time()) + " " + str(now))
         img = bytearray(frame)
     return img
 
@@ -49,7 +50,7 @@ async def my_frame_producer():
         if encodedImage:
             # encodedImage = cv2.resize(encodedImage, (960, 540))
             yield (b"--frame\r\nContent-Type:image/jpeg\r\n\r\n" + encodedImage + b"\r\n")
-            await asyncio.sleep(0)
+            await asyncio.sleep(0.0001)
     stream.release()
 
 web.config["generator"] = my_frame_producer
