@@ -1,18 +1,15 @@
 import datetime
 import time
 import psycopg2
-import uvicorn, asyncio, cv2
+import uvicorn, asyncio
 from vidgear.gears.asyncio import WebGear
-from vidgear.gears.asyncio.helper import reducer
 
 # initialize WebGear app without any source
 web = WebGear(logging=True)
 
 
-
 def fromPG(connection):
     cursor = connection.cursor()
-    # data = r.zrange("z1frame", 0, -1)
     postgreSQL_select_Query = "SELECT * FROM public.z2frame ORDER BY milliseconds ASC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
@@ -36,6 +33,7 @@ def fromPG(connection):
         img = bytearray(frame)
     return img
 
+
 # create your own custom frame producer
 async def my_frame_producer():
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
@@ -44,14 +42,20 @@ async def my_frame_producer():
     sql_delete_query = "Delete from public.z1frame"
     cursor.execute(sql_delete_query)
     connection.commit()
+    sql_delete_query = "Delete from public.z2frame"
+    cursor.execute(sql_delete_query)
+    connection.commit()
     time.sleep(0.5)
     while True:
+        encodedImage = []
         encodedImage = fromPG(connection)
         if encodedImage:
             # encodedImage = cv2.resize(encodedImage, (960, 540))
             yield (b"--frame\r\nContent-Type:image/jpeg\r\n\r\n" + encodedImage + b"\r\n")
-            await asyncio.sleep(0.0001)
-    stream.release()
+            await asyncio.sleep(0.00001)
+        time.sleep(0.0001)
+        yield ("")
+
 
 web.config["generator"] = my_frame_producer
 uvicorn.run(web(), host="localhost", port=8008)

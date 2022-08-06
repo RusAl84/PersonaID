@@ -15,7 +15,7 @@ app = Flask(__name__)
 def fromPG(connection):
     cursor = connection.cursor()
     # data = r.zrange("z1frame", 0, -1)
-    postgreSQL_select_Query = "SELECT * FROM public.z1frame ORDER BY milliseconds ASC LIMIT 1"
+    postgreSQL_select_Query = "SELECT * FROM public.z2frame ORDER BY milliseconds ASC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
     img = []
@@ -29,7 +29,7 @@ def fromPG(connection):
         #     sql_delete_query = "Delete from public.z1frame"
         # else:
         #     sql_delete_query = "Delete from public.z1frame where id = " + str(id)
-        sql_delete_query = "Delete from public.z1frame where id = " + str(id)
+        sql_delete_query = "Delete from public.z2frame where id = " + str(id)
         cursor.execute(sql_delete_query)
         connection.commit()
         dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
@@ -94,4 +94,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(host='0.0.0.0', port =80, debug=True, threaded=True)

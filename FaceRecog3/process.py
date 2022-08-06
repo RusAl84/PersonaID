@@ -66,4 +66,4 @@ if __name__ == '__main__':
             # 396 216
             # 330 180
             toPG(connection, frame)
-            # time.sleep(0.003)
+            time.sleep(0.01)

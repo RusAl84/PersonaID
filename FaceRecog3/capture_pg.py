@@ -38,5 +38,6 @@ if __name__ == '__main__':
             print("Can't receive frame (stream end?). Exiting ...")
             break
         toPG(connection, frame)
+        time.sleep(0.01)
     if connection:
         connection.close()
