@@ -1,13 +1,9 @@
-# import required libraries
-from vidgear.gears import CamGear
 from vidgear.gears import StreamGear
-import cv2
-import datetime
 import cv2
 import psycopg2
 import time
 import numpy as np
-
+import os
 
 def fromPG(connection):
     cursor = connection.cursor()
@@ -18,7 +14,7 @@ def fromPG(connection):
     img = []
     if datarecord:
         id = datarecord[0]
-        frame=[]
+        frame = []
         frame = datarecord[1]
         milliseconds = datarecord[2]
         timestr = datarecord[3]
@@ -30,10 +26,11 @@ def fromPG(connection):
         sql_delete_query = "Delete from public.z2frame where id = " + str(id)
         cursor.execute(sql_delete_query)
         connection.commit()
-        dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
-        now = datetime.datetime.now()
-        print(str(dt.time()) + " " + str(now) + " " +timestr)
+        # dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
+        # now = datetime.datetime.now()
+        # print(str(dt.time()) + " " + str(now) + " " +timestr)
         # img = bytearray(frame)
+        # img = frame
         # print(img)
         img = np.asarray(bytearray(frame), dtype="uint8")
         img = cv2.imdecode(img, cv2.IMREAD_COLOR)
@@ -50,8 +47,22 @@ if __name__ == '__main__':
     sql_delete_query = "Delete from public.z2frame"
     cursor.execute(sql_delete_query)
     connection.commit()
-    dashpath = "./static/dash_out.mpd"
-    streamer = StreamGear(output=dashpath)
+    dashpath = "./nginx/content/dash/"
+    # dashpath = "./static/dash_out.mpd"
+    # add various streams with custom Video Encoder and optimizations
+    # define various streams
+    # {"-resolution": "1280x720", "-framerate": 10.0},  # Stream2: 1280x720 at 30fps framerate
+    # {"-resolution": "640x360", "-framerate": 10.0},  # Stream3: 640x360 at 60fps framerate
+    # {"-resolution": "990x540", "-video_bitrate": "4096k"},  # Stream3: 320x240 at 500kbs bitrate
+
+    stream_params = {"-input_framerate": 10, "-livestream": True}
+    filelist = [f for f in os.listdir(dashpath)]
+    for f in filelist:
+        os.remove(os.path.join(dashpath, f))
+    dashpath += "dash_out.mpd"
+
+    streamer = StreamGear(output=dashpath, **stream_params)
+    # streamer = StreamGear(output=dashpath)
     # loop over
     while True:
 
@@ -65,11 +76,10 @@ if __name__ == '__main__':
         # send frame to streamer
         if len(frame) > 1:
             streamer.stream(frame)
-
             # Show output window
-            # cv2.imshow("Output Frame", frame)
-
-        # check for 'q' key if pressed
+        #     cv2.imshow("Output Frame", frame)
+        #
+        # # check for 'q' key if pressed
         # key = cv2.waitKey(1) & 0xFF
         # if key == ord("q"):
         #     break

@@ -4,6 +4,7 @@ from flask_cors import CORS
 app = Flask(__name__, static_url_path='/static')
 CORS(app)
 
+
 # @app.route('/')
 # def hello_world():  # put application's code here
 #     return 'Hello World!'
@@ -14,5 +15,6 @@ def index():
     # return render()
     return render_template('index.html')
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port =80, debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
