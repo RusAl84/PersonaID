@@ -18,6 +18,7 @@ def fromPG(connection):
     img = []
     if datarecord:
         id = datarecord[0]
+        frame=[]
         frame = datarecord[1]
         milliseconds = datarecord[2]
         timestr = datarecord[3]
@@ -31,8 +32,8 @@ def fromPG(connection):
         connection.commit()
         dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
         now = datetime.datetime.now()
-        print(str(dt.time()) + " " + str(now))
-        img = bytearray(frame)
+        print(str(dt.time()) + " " + str(now) + " " +timestr)
+        # img = bytearray(frame)
         # print(img)
         img = np.asarray(bytearray(frame), dtype="uint8")
         img = cv2.imdecode(img, cv2.IMREAD_COLOR)
@@ -42,10 +43,15 @@ def fromPG(connection):
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-
-    dashpath = "./dash/dash_out.mpd"
+    cursor = connection.cursor()
+    sql_delete_query = "Delete from public.z1frame"
+    cursor.execute(sql_delete_query)
+    connection.commit()
+    sql_delete_query = "Delete from public.z2frame"
+    cursor.execute(sql_delete_query)
+    connection.commit()
+    dashpath = "./static/dash_out.mpd"
     streamer = StreamGear(output=dashpath)
-
     # loop over
     while True:
 
@@ -57,21 +63,19 @@ if __name__ == '__main__':
             break
         # {do something with the frame here}
         # send frame to streamer
-        streamer.stream(frame)
+        if len(frame) > 1:
+            streamer.stream(frame)
 
-        # Show output window
-        cv2.imshow("Output Frame", frame)
+            # Show output window
+            # cv2.imshow("Output Frame", frame)
 
         # check for 'q' key if pressed
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord("q"):
-            break
+        # key = cv2.waitKey(1) & 0xFF
+        # if key == ord("q"):
+        #     break
 
-    # close output window
-    cv2.destroyAllWindows()
-
-    # safely close video stream
-    stream.stop()
+    # # close output window
+    # cv2.destroyAllWindows()
 
     # safely close streamer
     streamer.terminate()
