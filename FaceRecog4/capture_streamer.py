@@ -7,6 +7,57 @@ import psycopg2
 import time
 import os
 import simplejpeg
+import mediapipe as mp
+
+
+def DrawFPS(img, fps):
+    cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 2)
+
+
+def findFaces(img, draw=True):
+    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    minDetectionCon = 0.5
+    mpFaceDetection = mp.solutions.face_detection
+    mpDraw = mp.solutions.drawing_utils
+    faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
+                                                  model_selection=1)
+    results = faceDetection.process(imgRGB)
+    # print(self.results)
+    bboxs = []
+    if results.detections:
+        for id, detection in enumerate(results.detections):
+            bboxC = detection.location_data.relative_bounding_box
+            ih, iw, ic = img.shape
+            bbox = int(bboxC.xmin * iw), int(bboxC.ymin * ih), \
+                   int(bboxC.width * iw), int(bboxC.height * ih)
+            bboxs.append([id, bbox, detection.score])
+            # if len(bbox) > 1:
+            #     img = fancyDraw(img, bboxs)
+
+                # cv2.putText(img, f'{int(detection.score[0] * 100)}%',
+                #             (bbox[0], bbox[1] - 20), cv2.FONT_HERSHEY_PLAIN,
+                #             2, (255, 0, 255), 2)
+    return img, bboxs
+
+
+def fancyDraw(img, bbox, l=30, t=5, rt=1):
+    x, y, w, h = bbox
+    x1, y1 = x + w, y + h
+
+    cv2.rectangle(img, bbox, (255, 0, 255), rt)
+    # Top Left  x,y
+    cv2.line(img, (x, y), (x + l, y), (255, 0, 255), t)
+    cv2.line(img, (x, y), (x, y + l), (255, 0, 255), t)
+    # Top Right  x1,y
+    cv2.line(img, (x1, y), (x1 - l, y), (255, 0, 255), t)
+    cv2.line(img, (x1, y), (x1, y + l), (255, 0, 255), t)
+    # Bottom Left  x,y1
+    cv2.line(img, (x, y1), (x + l, y1), (255, 0, 255), t)
+    cv2.line(img, (x, y1), (x, y1 - l), (255, 0, 255), t)
+    # Bottom Right  x1,y1
+    cv2.line(img, (x1, y1), (x1 - l, y1), (255, 0, 255), t)
+    cv2.line(img, (x1, y1), (x1, y1 - l), (255, 0, 255), t)
+    return img
 
 
 def toPG(connection, img):
@@ -41,20 +92,25 @@ if __name__ == '__main__':
     # cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
-    cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
+    # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
+    cap = cv2.VideoCapture("d:\\test1.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
 
     with pyvirtualcam.Camera(width=990, height=540, fps=30, fmt=PixelFormat.BGR) as cam:
         # with pyvirtualcam.Camera(width=990, height=540, fps=10, fmt=PixelFormat.BGR) as cam:
-        print(f'Using virtual camera: {cam.device}')
+        # print(f'Using virtual camera: {cam.device}')
         # frame = np.zeros((cam.height, cam.width, 3), np.uint8)  # RGB
         sframe = []
         number_of_processing_frame = 3
         count = 0
+        pTime = 0
+        max_fps = cap.get(cv2.CAP_PROP_FPS)
         while True:
             count += 1
+            cTime = time.time()
+            fps = 1 / (cTime - pTime)
             # frame[:] = cam.frames_sent % 255  # grayscale animation
             # frame = fromPG(connection)
             ret, frame = cap.read()
@@ -62,6 +118,11 @@ if __name__ == '__main__':
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
             if len(frame) > 1:
+                pTime = cTime
+                DrawFPS(frame, fps)
+
+                img, bboxs = findFaces(frame)
+                print(bboxs)
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
                 cam.sleep_until_next_frame()

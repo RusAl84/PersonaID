@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     with pyvirtualcam.Camera(width=990, height=540, fps=30, fmt=PixelFormat.BGR) as cam:
         # with pyvirtualcam.Camera(width=990, height=540, fps=10, fmt=PixelFormat.BGR) as cam:
-        print(f'Using virtual camera: {cam.device}')
+        # print(f'Using virtual camera: {cam.device}')
         # frame = np.zeros((cam.height, cam.width, 3), np.uint8)  # RGB
         frame = []
         while True:
