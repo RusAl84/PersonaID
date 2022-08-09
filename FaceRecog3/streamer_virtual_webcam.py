@@ -64,6 +64,3 @@ if __name__ == '__main__':
                 # frame = cv2.resize(frame, (990, 540))
                 cam.send(frame)
                 cam.sleep_until_next_frame()
-                # cam.sleep_until_next_frame()
-                # cv2.imshow("img",frame)
-                # key = cv2.waitKey(0) & 0xFF

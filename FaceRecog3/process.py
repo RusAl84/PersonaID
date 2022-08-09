@@ -7,7 +7,7 @@ import simplejpeg
 
 
 def toPG(connection, img):
-    # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
+    # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
     # _, data = cv2.imencode('.jpg', img, encode_param)
     # frame = data.tobytes()
     frame = simplejpeg.encode_jpeg(image=img, quality=90)
@@ -61,11 +61,11 @@ if __name__ == '__main__':
         # frame = cv2.resize(frame, (495, 270))
         if len(frame) > 1:
             frame = cv2.resize(frame, (990, 540))
-            # frame = cv2.resize(frame, (495, 270))
+            # frame = cv2.resize(frame, (660, 360))
             # 990 540
             # 660 360
             # 495 270
             # 396 216
             # 330 180
             toPG(connection, frame)
-            # time.sleep(0.01)
+            time.sleep(0.01)
