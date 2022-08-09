@@ -1,24 +1,33 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
     <head>
-        <title>Dash.js Rocks</title>
-        <style>
-            video {
-                width: 990px;
-                height: 540px;
-            }
-        </style>
+        <meta charset="utf-8" />
+        <title>MPEG-DASH Live Stream</title>
     </head>
     <body>
-        <div>
-            <video id="videoPlayer" controls></video>
-        </div>
+        <h1>MPEG-DASH Live Stream</h1>
         <script src="dash.all.min.js"></script>
+        <video id="videoPlayer" controls></video>
         <script>
-            (function(){
+            (function () {
                 var url = "/dash/dash_out.mpd";
                 var player = dashjs.MediaPlayer().create();
-                player.initialize(document.querySelector("#videoPlayer"), url, true);
+                player.initialize(
+                    document.querySelector("#videoPlayer"),
+                    url,
+                    true
+                );
+                player.updateSettings({
+                    streaming: {
+                        lowLatencyEnabled: true,
+                        liveDelay: 2,
+                        liveCatchup: {
+                            minDrift: 0.05,
+                            playbackRate: 1,
+                            latencyThreshold: 30,
+                        },
+                    },
+                });
             })();
         </script>
     </body>

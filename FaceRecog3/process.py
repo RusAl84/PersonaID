@@ -3,12 +3,14 @@ import cv2
 import psycopg2
 import time
 import numpy as np
+import simplejpeg
 
 
-def toPG(r, img):
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
-    _, data = cv2.imencode('.jpg', img, encode_param)
-    frame = data.tobytes()
+def toPG(connection, img):
+    # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 50]
+    # _, data = cv2.imencode('.jpg', img, encode_param)
+    # frame = data.tobytes()
+    frame = simplejpeg.encode_jpeg(image=img, quality=90)
     milliseconds = int(time.time() * 1000)
     dt = datetime.datetime.fromtimestamp(milliseconds / 1000.0)
     # print(dt)
@@ -57,7 +59,7 @@ if __name__ == '__main__':
     while True:
         frame = fromPG(connection)
         # frame = cv2.resize(frame, (495, 270))
-        if len(frame)>1:
+        if len(frame) > 1:
             frame = cv2.resize(frame, (990, 540))
             # frame = cv2.resize(frame, (495, 270))
             # 990 540
@@ -66,4 +68,4 @@ if __name__ == '__main__':
             # 396 216
             # 330 180
             toPG(connection, frame)
-            time.sleep(0.01)
+            # time.sleep(0.01)

@@ -1,3 +1,5 @@
+import datetime
+
 from vidgear.gears import StreamGear
 import cv2
 import psycopg2
@@ -56,12 +58,18 @@ if __name__ == '__main__':
     # {"-resolution": "990x540", "-video_bitrate": "4096k"},  # Stream3: 320x240 at 500kbs bitrate
 
     stream_params = {"-input_framerate": 10, "-livestream": True}
+    # stream_params = {"-input_framerate": 10,"-vcodec":"libx264", "-livestream": True}
+    # stream_params = {"-input_framerate": 10,"-vcodec":"libx264"}
+    # stream_params = {"-input_framerate": 10}
+    # stream_params = {"-input_framerate": 10, "-livestream": True, "-window_size":5, "-gop": 70}
+    # stream_params = {"-resolution": "990x540", "-livestream": True}
     filelist = [f for f in os.listdir(dashpath)]
     for f in filelist:
         os.remove(os.path.join(dashpath, f))
     dashpath += "dash_out.mpd"
 
     streamer = StreamGear(output=dashpath, **stream_params)
+    # streamer = StreamGear(output=dashpath, custom_ffmpeg='D:/ffmpeg/bin/ffmpeg.exe', logging=False, **stream_params)
     # streamer = StreamGear(output=dashpath)
     # loop over
     while True:

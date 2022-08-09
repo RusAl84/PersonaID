@@ -2,12 +2,14 @@ import datetime
 import cv2
 import psycopg2
 import time
+import simplejpeg
 
 
-def toPG(r, img):
-    encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
-    _, data = cv2.imencode('.jpg', img, encode_param)
-    frame = data.tobytes()
+def toPG(connection, img):
+    # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
+    # _, data = cv2.imencode('.jpg', img, encode_param)
+    # frame = data.tobytes()
+    frame = simplejpeg.encode_jpeg(image=img, quality=80)
     milliseconds = int(time.time() * 1000)
     dt = datetime.datetime.fromtimestamp(milliseconds / 1000.0)
     # print(dt)
@@ -19,7 +21,6 @@ def toPG(r, img):
     data_tuple = (frame, milliseconds, dt)
     cursor.execute(sql_insert_with_param, data_tuple)
     connection.commit()
-    return
 
 
 if __name__ == '__main__':
@@ -38,6 +39,6 @@ if __name__ == '__main__':
             print("Can't receive frame (stream end?). Exiting ...")
             break
         toPG(connection, frame)
-        # time.sleep(0.2)
+        # time.sleep(0.02)
     if connection:
         connection.close()
