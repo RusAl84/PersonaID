@@ -14,13 +14,9 @@ def DrawFPS(img, fps):
     cv2.putText(img, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 255, 0), 2)
 
 
-def findFaces(img, draw=True):
+def findFaces(img, faceDetection):
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    minDetectionCon = 0.5
-    mpFaceDetection = mp.solutions.face_detection
-    mpDraw = mp.solutions.drawing_utils
-    faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
-                                                  model_selection=1)
+
     results = faceDetection.process(imgRGB)
     # print(self.results)
     bboxs = []
@@ -33,30 +29,33 @@ def findFaces(img, draw=True):
             bboxs.append([id, bbox, detection.score])
             # if len(bbox) > 1:
             #     img = fancyDraw(img, bboxs)
-
-                # cv2.putText(img, f'{int(detection.score[0] * 100)}%',
-                #             (bbox[0], bbox[1] - 20), cv2.FONT_HERSHEY_PLAIN,
-                #             2, (255, 0, 255), 2)
+            # cv2.putText(img, f'{int(detection.score[0] * 100)}%',
+            #             (bbox[0], bbox[1] - 20), cv2.FONT_HERSHEY_PLAIN,
+            #             2, (255, 0, 255), 2)
     return img, bboxs
 
 
-def fancyDraw(img, bbox, l=30, t=5, rt=1):
-    x, y, w, h = bbox
-    x1, y1 = x + w, y + h
-
-    cv2.rectangle(img, bbox, (255, 0, 255), rt)
-    # Top Left  x,y
-    cv2.line(img, (x, y), (x + l, y), (255, 0, 255), t)
-    cv2.line(img, (x, y), (x, y + l), (255, 0, 255), t)
-    # Top Right  x1,y
-    cv2.line(img, (x1, y), (x1 - l, y), (255, 0, 255), t)
-    cv2.line(img, (x1, y), (x1, y + l), (255, 0, 255), t)
-    # Bottom Left  x,y1
-    cv2.line(img, (x, y1), (x + l, y1), (255, 0, 255), t)
-    cv2.line(img, (x, y1), (x, y1 - l), (255, 0, 255), t)
-    # Bottom Right  x1,y1
-    cv2.line(img, (x1, y1), (x1 - l, y1), (255, 0, 255), t)
-    cv2.line(img, (x1, y1), (x1, y1 - l), (255, 0, 255), t)
+def DrawRectagle(img, bbox, detection_score, l=30, t=5, rt=1):
+    for box in bbox:
+        num = box[0]
+        dots = box[1]
+        score = box[2][0]
+        if score >= detection_score:
+            x, y, w, h = dots
+            x1, y1 = x + w, y + h
+            cv2.rectangle(img, dots, (255, 0, 255), rt)
+            # # Top Left  x,y
+            # cv2.line(img, (x, y), (x + l, y), (255, 0, 255), rt)
+            # cv2.line(img, (x, y), (x, y + l), (255, 0, 255), rt)
+            # # Top Right  x1,y
+            # cv2.line(img, (x1, y), (x1 - l, y), (255, 0, 255), rt)
+            # cv2.line(img, (x1, y), (x1, y + l), (255, 0, 255), rt)
+            # # Bottom Left  x,y1
+            # cv2.line(img, (x, y1), (x + l, y1), (255, 0, 255), t)
+            # cv2.line(img, (x, y1), (x, y1 - l), (255, 0, 255), t)
+            # # Bottom Right  x1,y1
+            # cv2.line(img, (x1, y1), (x1 - l, y1), (255, 0, 255), rt)
+            # cv2.line(img, (x1, y1), (x1, y1 - l), (255, 0, 255), rt)
     return img
 
 
@@ -107,6 +106,12 @@ if __name__ == '__main__':
         count = 0
         pTime = 0
         max_fps = cap.get(cv2.CAP_PROP_FPS)
+        detection_score = 0.6  # порог чувствительрности для поиска лица от 0 до 1
+        minDetectionCon = 0.5
+        mpFaceDetection = mp.solutions.face_detection
+        mpDraw = mp.solutions.drawing_utils
+        faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
+                                                      model_selection=1)
         while True:
             count += 1
             cTime = time.time()
@@ -119,10 +124,11 @@ if __name__ == '__main__':
                 break
             if len(frame) > 1:
                 pTime = cTime
-                DrawFPS(frame, fps)
-
-                img, bboxs = findFaces(frame)
+                # DrawFPS(frame, fps)
+                #
+                img, bboxs = findFaces(frame, faceDetection)
                 print(bboxs)
+                DrawRectagle(img, bboxs, detection_score)
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
                 cam.sleep_until_next_frame()
