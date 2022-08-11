@@ -9,6 +9,7 @@ import numpy as np
 import simplejpeg
 import face_recognition
 
+
 def toPG(connection, img):
     # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
     # _, data = cv2.imencode('.jpg', img, encode_param)
@@ -34,23 +35,55 @@ def fromPG(connection):
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
     img = []
+    bboxs = []
     if datarecord:
         id = datarecord[0]
         frame = datarecord[1]
         milliseconds = datarecord[2]
         timestr = datarecord[3]
-        bbox = datarecord[4]
+        bboxs = datarecord[4]
         sql_delete_query = "Delete from public.z1frame where id = " + str(id)
         cursor.execute(sql_delete_query)
         connection.commit()
-        print(bbox)
+        if len(bboxs)>2:
+            bboxs = json.loads(bboxs)
+        print(bboxs)
+
         # dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
         # now = datetime.datetime.now()
         # print(str(dt.time()) + " " + str(now))
         # img = bytearray(frame)
         img = np.asarray(bytearray(frame), dtype="uint8")
         img = cv2.imdecode(img, cv2.IMREAD_COLOR)
-    return img, bbox
+    return (img, bboxs)
+
+
+def recognize(bboxs, frame, known_encodings, max_face_distance):
+    face_locations = [(bbox[1][1], bbox[1][0] + bbox[1][2], bbox[1][1] + bbox[1][3], bbox[1][0]) for bbox in bboxs]
+    rgb_frame = frame[:, :, ::-1]
+    face_names = []
+    face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+
+    for face_encoding in face_encodings:
+        # See if the face is a match for the known face(s)
+        matches = face_recognition.compare_faces(known_encodings, face_encoding)
+        name = "Unknown"
+
+        # use the known face with the smallest distance to the new face
+        face_distances = face_recognition.face_distance(known_encodings, face_encoding)
+        best_match_index = np.argmin(face_distances)
+
+        if matches[best_match_index] and min(face_distances) < max_face_distance:
+            name = known_names[best_match_index]
+            print(name, face_distances)
+
+        face_names.append(name)
+
+    for i in range(len(face_names)):
+        if face_names[i] != "Unknown":
+            faces_info[face_names[i]] = (bboxs[i], time.time())
+
+    return face_names
 
 
 if __name__ == '__main__':
@@ -71,15 +104,18 @@ if __name__ == '__main__':
         face_encoding = face_recognition.face_encodings(image)[0]
         known_encodings.append(face_encoding)
         known_names.append(item['name'])
-    max_face_distance
+    max_face_distance = 0.55
     # cursor = connection.cursor()
     # sql_delete_query = "Delete from public.z1frame"
     # cursor.execute(sql_delete_query)
     # connection.commit()
     # time.sleep(0.5)
     while True:
-        frame, bbox = fromPG(connection)
+        frame, bboxs = fromPG(connection)
         # frame = cv2.resize(frame, (495, 270))
-        if len(frame) > 1:
+        if len(frame) > 1 and len(bboxs) > 2:
+            face_names = recognize(bboxs, frame, known_encodings, max_face_distance)
             # toPG(connection, frame)
+            print(face_names)
+
             time.sleep(0.01)
