@@ -1,4 +1,5 @@
 import datetime
+import json
 import pyvirtualcam
 from pyvirtualcam import PixelFormat
 import numpy as np
@@ -40,6 +41,7 @@ def DrawRectagle(img, bbox, detection_score, l=30, t=5, rt=1):
         num = box[0]
         dots = box[1]
         score = box[2][0]
+        # text =  box[2]
         if score >= detection_score:
             x, y, w, h = dots
             x1, y1 = x + w, y + h
@@ -59,7 +61,7 @@ def DrawRectagle(img, bbox, detection_score, l=30, t=5, rt=1):
     return img
 
 
-def toPG(connection, img):
+def toPG(connection, img, bbox):
     # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
     # _, data = cv2.imencode('.jpg', img, encode_param)
     # frame = data.tobytes()
@@ -69,10 +71,11 @@ def toPG(connection, img):
     # print(dt)
     score = milliseconds
     cursor = connection.cursor()
+    bbox = str(bbox)
     sql_insert_with_param = """INSERT INTO z1frame
-                          (frame, milliseconds ,timestr)
-                          VALUES (%s, %s, %s);"""
-    data_tuple = (frame, milliseconds, dt)
+                          (frame, milliseconds ,timestr, bbox)
+                          VALUES (%s, %s, %s, %s);"""
+    data_tuple = (frame, milliseconds, dt, bbox)
     cursor.execute(sql_insert_with_param, data_tuple)
     connection.commit()
 
@@ -84,9 +87,9 @@ if __name__ == '__main__':
     sql_delete_query = "Delete from public.z1frame"
     cursor.execute(sql_delete_query)
     connection.commit()
-    sql_delete_query = "Delete from public.z2frame"
-    cursor.execute(sql_delete_query)
-    connection.commit()
+    # sql_delete_query = "Delete from public.z2frame"
+    # cursor.execute(sql_delete_query)
+    # connection.commit()
 
     # cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
@@ -107,9 +110,9 @@ if __name__ == '__main__':
         pTime = 0
         max_fps = cap.get(cv2.CAP_PROP_FPS)
         detection_score = 0.6  # порог чувствительрности для поиска лица от 0 до 1
-        minDetectionCon = 0.5
+        minDetectionCon = 0.6
         mpFaceDetection = mp.solutions.face_detection
-        mpDraw = mp.solutions.drawing_utils
+        # mpDraw = mp.solutions.drawing_utils
         faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
                                                       model_selection=1)
         while True:
@@ -127,11 +130,14 @@ if __name__ == '__main__':
                 # DrawFPS(frame, fps)
                 #
                 img, bboxs = findFaces(frame, faceDetection)
-                print(bboxs)
+                # print(bboxs)
+                if count % number_of_processing_frame == 0:
+                    count = 0
+                    toPG(connection, frame, bboxs)
+
+                # тут рисовать имена
                 DrawRectagle(img, bboxs, detection_score)
+
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
                 cam.sleep_until_next_frame()
-                if count % number_of_processing_frame == 0:
-                    count = 0
-                    toPG(connection, frame)
