@@ -71,7 +71,7 @@ def toPG(connection, img, bbox):
     # print(dt)
     score = milliseconds
     cursor = connection.cursor()
-    bbox = str(bbox)
+    bbox = json.dumps(str(bbox))
     sql_insert_with_param = """INSERT INTO z1frame
                           (frame, milliseconds ,timestr, bbox)
                           VALUES (%s, %s, %s, %s);"""
@@ -133,7 +133,10 @@ if __name__ == '__main__':
                 # print(bboxs)
                 if count % number_of_processing_frame == 0:
                     count = 0
-                    toPG(connection, frame, bboxs)
+                    if len(bboxs) > 0:
+                        toPG(connection, frame, bboxs)
+                    else:
+                        count -= 1
 
                 # тут рисовать имена
                 DrawRectagle(img, bboxs, detection_score)
