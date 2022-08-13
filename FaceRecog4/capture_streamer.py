@@ -9,6 +9,7 @@ import time
 import os
 import simplejpeg
 import mediapipe as mp
+import zdata
 
 
 def DrawFPS(img, fps):
@@ -80,6 +81,29 @@ def toPG(connection, img, bbox):
     connection.commit()
 
 
+def fromPGZdata(connection):
+    cursor = connection.cursor()
+    postgreSQL_select_Query = "SELECT * FROM public.zdata ORDER BY milliseconds DESC LIMIT 1"
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchone()
+    zjson = []
+    milliseconds = 0
+    if datarecord:
+        id = datarecord[0]
+        zjson = datarecord[1]
+        milliseconds = datarecord[2]
+        timestr = datarecord[3]
+        sql_delete_query = "Delete from public.zdata where id = " + str(id)
+        cursor.execute(sql_delete_query)
+        connection.commit()
+        if len(zjson) > 1:
+            zjson = zjson.replace("'", "")
+            zjson = zjson.replace("\"", "")
+            import ast
+            zjson = ast.literal_eval(zjson)
+    return zjson, milliseconds
+
+
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
@@ -87,9 +111,10 @@ if __name__ == '__main__':
     sql_delete_query = "Delete from public.z1frame"
     cursor.execute(sql_delete_query)
     connection.commit()
-    # sql_delete_query = "Delete from public.z2frame"
-    # cursor.execute(sql_delete_query)
-    # connection.commit()
+    sql_delete_query = "Delete from public.zdata"
+    cursor.execute(sql_delete_query)
+    connection.commit()
+    zdata = zdata.load()
 
     # cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
@@ -115,6 +140,8 @@ if __name__ == '__main__':
         # mpDraw = mp.solutions.drawing_utils
         faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
                                                       model_selection=1)
+        gbboxs = []
+        lifeTime = 1000 * 3
         while True:
             count += 1
             cTime = time.time()
@@ -137,6 +164,9 @@ if __name__ == '__main__':
                         toPG(connection, frame, bboxs)
                     else:
                         count -= 1
+                zjson, milliseconds = fromPGZdata(connection)
+                if int(milliseconds)>0:
+                    print(zjson, milliseconds)
 
                 # тут рисовать имена
                 DrawRectagle(img, bboxs, detection_score)
