@@ -9,6 +9,7 @@ import simplejpeg
 import face_recognition
 import zdata
 
+
 def toPG(connection, nboxs, milliseconds):
     # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
     # _, data = cv2.imencode('.jpg', img, encode_param)
@@ -119,13 +120,13 @@ if __name__ == '__main__':
     # connection.commit()
     # time.sleep(0.5)
     while True:
-    # for i in range(10):
+        # for i in range(10):
         frame, bboxs, milliseconds = fromPG(connection)
         # frame = cv2.resize(frame, (495, 270))
         if len(frame) > 1:
             nboxs = recognize(bboxs, frame, known_encodings, max_face_distance, zdata)
             #
-            if len(nboxs)>0:
+            if len(nboxs) > 0:
                 print(nboxs, milliseconds)
                 toPG(connection, nboxs, milliseconds)
             # for item in bboxs:

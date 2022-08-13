@@ -37,29 +37,55 @@ def findFaces(img, faceDetection):
     return img, bboxs
 
 
-def DrawRectagle(img, bbox, detection_score, l=30, t=5, rt=1):
+def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1):
     for box in bbox:
         num = box[0]
         dots = box[1]
         score = box[2][0]
         # text =  box[2]
+        newgbboxs = gbboxs
         if score >= detection_score:
             x, y, w, h = dots
             x1, y1 = x + w, y + h
             cv2.rectangle(img, dots, (255, 0, 255), rt)
-            # # Top Left  x,y
-            # cv2.line(img, (x, y), (x + l, y), (255, 0, 255), rt)
-            # cv2.line(img, (x, y), (x, y + l), (255, 0, 255), rt)
-            # # Top Right  x1,y
-            # cv2.line(img, (x1, y), (x1 - l, y), (255, 0, 255), rt)
-            # cv2.line(img, (x1, y), (x1, y + l), (255, 0, 255), rt)
-            # # Bottom Left  x,y1
-            # cv2.line(img, (x, y1), (x + l, y1), (255, 0, 255), t)
-            # cv2.line(img, (x, y1), (x, y1 - l), (255, 0, 255), t)
-            # # Bottom Right  x1,y1
-            # cv2.line(img, (x1, y1), (x1 - l, y1), (255, 0, 255), rt)
-            # cv2.line(img, (x1, y1), (x1, y1 - l), (255, 0, 255), rt)
-    return img
+            cMilliseconds = int(time.time() * 1000)
+            newgbboxs = []
+            num = -1
+            d = 10 ** 8
+            name = ""
+            for gitem in gbboxs:
+                gMilliseconds = gitem[4]
+                if abs(gMilliseconds - cMilliseconds) <= lifeTime:
+                    newgbboxs.append(gitem)
+                    cbox = gitem[1]
+                    # print(dots)
+                    # print(gitem[1])
+                    # print("gitem[1]")
+                    if dist(dots, cbox) < d:
+                        d = dist(dots, cbox)
+                        name = zdata[gitem[3]]['name']
+            gbboxs = newgbboxs
+            fontScale=2
+            cv2.putText(img, name,
+                        (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
+                        fontScale, (255, 0, 255), 3)
+            # cv2.putText(img, name,
+            #             (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
+            #             0.5, (255, 0, 255), 1)
+
+    return img, gbboxs
+
+
+def dist(dots, box):
+    d = 0
+    x1, y1, w1, h1 = dots
+    x2, y2, w2, h2 = box
+    xx1 = x1 + w1 / 2
+    yy1 = y1 + h1 / 2
+    xx2 = x2 + w2 / 2
+    yy2 = y2 + h2 / 2
+    d = np.sqrt((xx1 - xx2) ** 2 + (yy1 - yy2) ** 2)
+    return d
 
 
 def toPG(connection, img, bbox):
@@ -115,12 +141,14 @@ if __name__ == '__main__':
     cursor.execute(sql_delete_query)
     connection.commit()
     zdata = zdata.load()
-
+    lifeTime = 1000 * 3
+    number_of_processing_frame = 4
     # cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
-    cap = cv2.VideoCapture("d:\\test1.mp4")
+    # cap = cv2.VideoCapture("d:\\test1.mp4")
+    cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
@@ -130,7 +158,6 @@ if __name__ == '__main__':
         # print(f'Using virtual camera: {cam.device}')
         # frame = np.zeros((cam.height, cam.width, 3), np.uint8)  # RGB
         sframe = []
-        number_of_processing_frame = 3
         count = 0
         pTime = 0
         max_fps = cap.get(cv2.CAP_PROP_FPS)
@@ -141,7 +168,7 @@ if __name__ == '__main__':
         faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
                                                       model_selection=1)
         gbboxs = []
-        lifeTime = 1000 * 3
+
         while True:
             count += 1
             cTime = time.time()
@@ -165,11 +192,15 @@ if __name__ == '__main__':
                     else:
                         count -= 1
                 zjson, milliseconds = fromPGZdata(connection)
-                if int(milliseconds)>0:
-                    print(zjson, milliseconds)
 
+                if int(milliseconds) > 0:
+                    for item in zjson:
+                        # iMilliseconds=item[3]
+                        # print(item, iMilliseconds, milliseconds)
+                        item.append(milliseconds)
+                        gbboxs.append(item)
                 # тут рисовать имена
-                DrawRectagle(img, bboxs, detection_score)
+                frame, gbboxs = DrawRectagle(img, bboxs, gbboxs, detection_score)
 
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
