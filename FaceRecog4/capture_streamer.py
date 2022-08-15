@@ -145,10 +145,10 @@ if __name__ == '__main__':
     number_of_processing_frame = 4
     # cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
-    # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
+    cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("d:\\test1.mp4")
-    cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
+    # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
