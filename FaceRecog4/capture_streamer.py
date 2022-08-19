@@ -10,6 +10,7 @@ import os
 import simplejpeg
 import mediapipe as mp
 import zdata
+import random
 
 
 def DrawFPS(img, fps):
@@ -37,7 +38,7 @@ def findFaces(img, faceDetection):
     return img, bboxs
 
 
-def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1):
+def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1, dpix=100):
     for box in bbox:
         num = box[0]
         dots = box[1]
@@ -63,9 +64,10 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1):
                     # print("gitem[1]")
                     if dist(dots, cbox) < d:
                         d = dist(dots, cbox)
-                        name = zdata[gitem[3]]['name']
+                        if d < dpix:
+                            name = zdata[gitem[3]]['name']
             gbboxs = newgbboxs
-            fontScale=2
+            fontScale = 2
             cv2.putText(img, name,
                         (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
                         fontScale, (255, 0, 255), 3)
@@ -141,14 +143,14 @@ if __name__ == '__main__':
     cursor.execute(sql_delete_query)
     connection.commit()
     zdata = zdata.load()
-    lifeTime = 1000 * 3
-    number_of_processing_frame = 4
-    # cap = cv2.VideoCapture(0)
+    lifeTime = 1000 * 5
+    number_of_processing_frame = 7
+    # cap = cv2.VideoCapture(1)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
-    # cap = cv2.VideoCapture("d:\\test1.mp4")
-    cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
+    cap = cv2.VideoCapture("d:\\test1.mp4")
+    # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
@@ -161,13 +163,14 @@ if __name__ == '__main__':
         count = 0
         pTime = 0
         max_fps = cap.get(cv2.CAP_PROP_FPS)
-        detection_score = 0.6  # порог чувствительрности для поиска лица от 0 до 1
+        detection_score = 0.4  # порог чувствительрности для поиска лица от 0 до 1
         minDetectionCon = 0.6
         mpFaceDetection = mp.solutions.face_detection
         # mpDraw = mp.solutions.drawing_utils
         faceDetection = mpFaceDetection.FaceDetection(min_detection_confidence=minDetectionCon,
                                                       model_selection=1)
         gbboxs = []
+        gdash = []
 
         while True:
             count += 1
@@ -193,15 +196,14 @@ if __name__ == '__main__':
                         count -= 1
                 zjson, milliseconds = fromPGZdata(connection)
 
-
-
                 if int(milliseconds) > 0:
                     for item in zjson:
                         # iMilliseconds=item[3]
                         # print(item, iMilliseconds, milliseconds)
                         item.append(milliseconds)
                         gbboxs.append(item)
-                #
+
+                    # cv2.imwrite(".\\capture\\" + str(milliseconds) + str(random.randint(0, 10 ** 10)) + ".jpg", frame)
 
                 frame, gbboxs = DrawRectagle(img, bboxs, gbboxs, detection_score)
 

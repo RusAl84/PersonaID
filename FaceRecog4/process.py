@@ -1,6 +1,8 @@
 import datetime
+import io
 import json
 import os
+import random
 import cv2
 import psycopg2
 import time
@@ -8,6 +10,7 @@ import numpy as np
 import simplejpeg
 import face_recognition
 import zdata
+from PIL import Image
 
 
 def toPG(connection, nboxs, milliseconds):
@@ -96,6 +99,15 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
 
     return nbboxs
 
+def get_lifetime(connection):
+    cursor = connection.cursor()
+    postgreSQL_select_Query = "SELECT * FROM public.z1frame ORDER BY milliseconds DESC LIMIT 1"
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchone()
+    img = []
+    bboxs = []
+    milliseconds = 0
+    # if datarecord:
 
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
@@ -127,8 +139,36 @@ if __name__ == '__main__':
             nboxs = recognize(bboxs, frame, known_encodings, max_face_distance, zdata)
             #
             if len(nboxs) > 0:
-                print(nboxs, milliseconds)
+
                 toPG(connection, nboxs, milliseconds)
+                # cv2.imwrite("2.jpg", frame)
+                for bitem in nboxs:
+                    face_id = bitem[3]
+                    bboxs = bitem[1]
+
+
+                    img = simplejpeg.encode_jpeg(image=frame, quality=90)
+                    im = Image.open(io.BytesIO(img))
+                    width, height = im.size
+                    padding = 20
+                    x1 = bboxs[0] - padding
+                    y1 = bboxs[1] - padding
+                    x2 = bboxs[0] + bboxs[2] + padding
+                    y2 = bboxs[1] + bboxs[3] + padding
+                    if x1 < 0:
+                        x1 = 0
+                    if y1 < 0:
+                        y1 = 0
+                    if x2 > width:
+                        x2 = width
+                    if y2 > height:
+                        y2 = height
+                    pixels = (x1, y1, x2, y2)
+                    fname_str = ".\\capture\\" + str(milliseconds) + "_" + str(random.randint(0, 10 ** 10)) + ".jpg"
+                    im_crop = im.crop(pixels)
+                    im_crop.save(fname_str, quality=80)
+                    print(bitem, zdata[face_id]['name'], face_id, milliseconds)
+
             # for item in bboxs:
             #     if item[3]!="Unknown":
             #         exist=True

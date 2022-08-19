@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import zdata
+from flask import send_from_directory
 
 app = Flask(__name__)
 CORS(app)
@@ -25,6 +26,14 @@ def GetMessage(id):
         # //update
     else:
         return "not found", 400
+
+@app.route('/photo/<path:path>')
+def send_photo(path):
+    return send_from_directory('photo', path)
+
+@app.route('/capture/<path:path>')
+def send_capture(path):
+    return send_from_directory('capture', path)
 
 
 if __name__ == '__main__':
