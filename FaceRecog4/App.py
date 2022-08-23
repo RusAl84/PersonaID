@@ -1,3 +1,7 @@
+import time
+import atexit
+
+import psycopg2
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import zdata
@@ -8,6 +12,22 @@ CORS(app)
 
 Items = []
 gdata = []
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
+def print_date_time():
+    connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
+                                  database="personadb")
+    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=print_date_time, trigger="interval", seconds=5)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
 
 
 @app.route('/')
@@ -27,9 +47,11 @@ def GetMessage(id):
     else:
         return "not found", 400
 
+
 @app.route('/photo/<path:path>')
 def send_photo(path):
     return send_from_directory('photo', path)
+
 
 @app.route('/capture/<path:path>')
 def send_capture(path):

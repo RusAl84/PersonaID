@@ -122,7 +122,9 @@ def get_lifetime(connection, face_id):
         mill = datarecord[0]
         milliseconds = int(time.time() * 1000)
         return milliseconds-mill
-    return 0
+    else:
+        return 90*10**8
+    return -1
 
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
