@@ -197,6 +197,7 @@ if __name__ == '__main__':
                         timestr = str(dt)
                         photo = str(zdata[face_id]['filename'])
                         photo = photo.replace('\\', '/')
+
                         url = "http://127.0.0.1:5000"
                         toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
             # for item in bboxs:
