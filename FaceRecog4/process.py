@@ -133,6 +133,7 @@ if __name__ == '__main__':
     zdata = zdata.load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
+
     # faces_info = {}
     known_images = []
     known_encodings = []

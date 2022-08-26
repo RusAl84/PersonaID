@@ -142,6 +142,11 @@ if __name__ == '__main__':
     sql_delete_query = "Delete from public.zdata"
     cursor.execute(sql_delete_query)
     connection.commit()
+    captpath = ".\\capture\\"
+    stream_params = {"-input_framerate": 10, "-livestream": True}
+    filelist = [f for f in os.listdir(captpath)]
+    for f in filelist:
+        os.remove(os.path.join(captpath, f))
     zdata = zdata.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
