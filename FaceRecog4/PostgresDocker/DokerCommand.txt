@@ -1,21 +1,84 @@
-Run docker stack deploy -c stack.yml postgres
-(or
-docker-compose -f stack.yml up),
-wait for it to initialize completely, and
-visit http://swarm-ip:8080, http://localhost:8080, or http://host-ip:8080 (as appropriate).
+-- Table: public.z1frame
 
+-- DROP TABLE IF EXISTS public.z1frame;
 
-docker service ls
-Then, you can stop the service
-
-docker service rm <service id discovered with previous command>
-
-
-CREATE TABLE public.z1frame (
-    id bigint NOT NULL,
+CREATE TABLE IF NOT EXISTS public.z1frame
+(
+    id bigint NOT NULL DEFAULT nextval('z1frame_id_seq'::regclass),
     frame bytea,
-    milliseconds bigint,
-    timestr character(40)
-);
+    milliseconds numeric,
+    timestr character(40) COLLATE pg_catalog."default",
+    bbox text COLLATE pg_catalog."default",
+    CONSTRAINT z1frame_pkey PRIMARY KEY (id)
+)
 
-ALTER USER personauser WITH PASSWORD 'pgpwd4persona';
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.z1frame
+    OWNER to personauser;
+-- Index: milisec
+
+-- DROP INDEX IF EXISTS public.milisec;
+
+CREATE UNIQUE INDEX IF NOT EXISTS milisec
+    ON public.z1frame USING btree
+    (milliseconds ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+
+
+
+
+
+
+-- Table: public.zdash
+
+-- DROP TABLE IF EXISTS public.zdash;
+
+CREATE TABLE IF NOT EXISTS public.zdash
+(
+    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    milliseconds bigint,
+    timestr character(40) COLLATE pg_catalog."default",
+    photo text COLLATE pg_catalog."default",
+    name text COLLATE pg_catalog."default",
+    capture text COLLATE pg_catalog."default",
+    name_id bigint,
+    CONSTRAINT zdash_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.zdash
+    OWNER to personauser;
+
+
+
+
+
+
+-- Table: public.zdata
+
+-- DROP TABLE IF EXISTS public.zdata;
+
+CREATE TABLE IF NOT EXISTS public.zdata
+(
+    id bigint NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1 ),
+    zjson text COLLATE pg_catalog."default",
+    milliseconds bigint,
+    timestr character(40) COLLATE pg_catalog."default",
+    CONSTRAINT zdata_pkey PRIMARY KEY (id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.zdata
+    OWNER to personauser;
+-- Index: zmilisec
+
+-- DROP INDEX IF EXISTS public.zmilisec;
+
+CREATE INDEX IF NOT EXISTS zmilisec
+    ON public.zdata USING btree
+    (milliseconds DESC NULLS LAST)
+    TABLESPACE pg_default;

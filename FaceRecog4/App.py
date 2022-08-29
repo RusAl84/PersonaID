@@ -1,6 +1,5 @@
 import time
 import atexit
-
 import psycopg2
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -16,14 +15,39 @@ gdata = []
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
-def print_date_time():
+def update_items():
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-    print(time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+    cursor = connection.cursor()
+    postgreSQL_select_Query = "SELECT * FROM public.zdash ORDER BY milliseconds ASC LIMIT 1"
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchone()
+
+    if datarecord:
+        id = datarecord[0]
+        milliseconds = datarecord[1]
+        timestr = datarecord[2]
+        photo = datarecord[3]
+        name = datarecord[4]
+        capture = datarecord[5]
+        name_id = datarecord[6]
+        sql_delete_query = "Delete from public.zdash where id = " + str(id)
+        cursor.execute(sql_delete_query)
+        connection.commit()
+        dic = {}
+        dic['milliseconds'] = milliseconds
+        dic['timestr'] = timestr
+        dic['photo'] = photo
+        dic['name'] = name
+        dic['capture'] = capture
+        dic['name_id'] = name_id
+        Items.append(dic)
+    return
+    # print("updated" + time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=print_date_time, trigger="interval", seconds=5)
+scheduler.add_job(func=update_items, trigger="interval", seconds=7)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app
@@ -60,7 +84,14 @@ def send_capture(path):
 
 if __name__ == '__main__':
     gdata = zdata.load()
-    Items.append(gdata[1])
-    Items.append(gdata[2])
-    Items.append(gdata[3])
+    Items = []
+    # Items.append(gdata[1])
+    # Items.append(gdata[2])
+    # Items.append(gdata[3])
+    connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
+                                  database="personadb")
+    cursor = connection.cursor()
+    sql_delete_query = "Delete from public.zdash"
+    cursor.execute(sql_delete_query)
+    connection.commit()
     app.run()
