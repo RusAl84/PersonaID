@@ -115,21 +115,23 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
 
 def get_lifetime(connection, face_id):
     cursor = connection.cursor()
-    postgreSQL_select_Query = "SELECT milliseconds FROM public.zdash WHERE name_id="+str(face_id)+" ORDER BY milliseconds DESC LIMIT 1"
+    postgreSQL_select_Query = "SELECT milliseconds FROM public.zdash WHERE name_id=" + str(
+        face_id) + " ORDER BY milliseconds DESC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
     if datarecord:
         mill = datarecord[0]
         milliseconds = int(time.time() * 1000)
-        return milliseconds-mill
+        return milliseconds - mill
     else:
-        return 90*10**8
+        return 90 * 10 ** 8
     return -1
+
 
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-    life_time = 30*1000
+    life_time = 30 * 1000
     zdata = zdata.load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
@@ -164,9 +166,9 @@ if __name__ == '__main__':
                 # cv2.imwrite("2.jpg", frame)
                 for bitem in nboxs:
                     face_id = bitem[3]
-                    life = get_lifetime(connection, face_id)
-                    print(life)
-                    if life > life_time:
+                    c_life_time = get_lifetime(connection, face_id)
+                    print(c_life_time)
+                    if c_life_time > life_time:
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
                         im = Image.open(io.BytesIO(img))
@@ -189,9 +191,9 @@ if __name__ == '__main__':
                         im_crop = im.crop(pixels)
                         im_crop.save(fname_str, quality=80)
                         print(bitem, zdata[face_id]['name'], face_id, milliseconds)
-                        fname_str = fname_str.replace('.', '')
-                        capture = fname_str.replace('\\', '/')
-                        capture = fname_str.replace('jpg', '.jpg')
+                        capture = fname_str.replace('.', '')
+                        capture = capture.replace('\\', '/')
+                        capture = capture.replace('jpg', '.jpg')
                         name = str(zdata[face_id]['name'])
                         name_id = str(face_id)
                         dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
