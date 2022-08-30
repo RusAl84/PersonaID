@@ -41,7 +41,7 @@ def update_items():
         dic['name'] = name
         dic['capture'] = capture
         dic['name_id'] = name_id
-        print(gdata[int(name_id)]["desc"])
+        dic['desc'] = gdata[int(name_id)]["desc"]
         Items.append(dic)
     return
     # print("updated" + time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
@@ -57,7 +57,7 @@ atexit.register(lambda: scheduler.shutdown())
 
 @app.route('/')
 def dafault_route():
-    return 'FaceRecog '
+    return 'FaceRecog Items:' + str(len(Items))
 
 
 # получение сообщений

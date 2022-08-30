@@ -124,23 +124,16 @@ def get_lifetime(connection, face_id):
         milliseconds = int(time.time() * 1000)
         return milliseconds - mill
     else:
-        return 90 * 10 ** 8
-    return -1
-
+        return -1
 
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-    life_time = 30 * 1000
     zdata = zdata.load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
-
-    # faces_info = {}
     known_images = []
     known_encodings = []
-    # known_names = []
-
     for item in zdata:
         image = face_recognition.load_image_file(path + item['filename'])
         known_images.append(image)
@@ -148,6 +141,8 @@ if __name__ == '__main__':
         known_encodings.append(face_encoding)
         # known_names.append(item['name'])
     max_face_distance = 0.5
+    life_time = 30 * 1000
+    t_life_time = 0
     cursor = connection.cursor()
     sql_delete_query = "Delete from public.zdash"
     cursor.execute(sql_delete_query)
@@ -159,16 +154,13 @@ if __name__ == '__main__':
         # frame = cv2.resize(frame, (495, 270))
         if len(frame) > 1:
             nboxs = recognize(bboxs, frame, known_encodings, max_face_distance, zdata)
-            #
             if len(nboxs) > 0:
-
                 toPG(connection, nboxs, milliseconds)
                 # cv2.imwrite("2.jpg", frame)
                 for bitem in nboxs:
                     face_id = bitem[3]
-                    c_life_time = get_lifetime(connection, face_id)
-                    print(c_life_time)
-                    if c_life_time > life_time:
+                    c_life_time = int(time.time() * 1000)
+                    if abs(t_life_time - c_life_time) > life_time:
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
                         im = Image.open(io.BytesIO(img))
@@ -200,11 +192,7 @@ if __name__ == '__main__':
                         timestr = str(dt)
                         photo = str(zdata[face_id]['filename'])
                         photo = photo.replace('\\', '/')
-
                         url = "http://127.0.0.1:5000"
                         toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
-            # for item in bboxs:
-            #     if item[3]!="Unknown":
-            #         exist=True
-
+                        t_life_time = milliseconds
             time.sleep(0.01)
