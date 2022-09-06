@@ -135,18 +135,18 @@ def fromPGZdata(connection):
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-    cursor = connection.cursor()
-    sql_delete_query = "Delete from public.z1frame"
-    cursor.execute(sql_delete_query)
-    connection.commit()
-    sql_delete_query = "Delete from public.zdata"
-    cursor.execute(sql_delete_query)
-    connection.commit()
-    captpath = ".\\capture\\"
-    stream_params = {"-input_framerate": 10, "-livestream": True}
-    filelist = [f for f in os.listdir(captpath)]
-    for f in filelist:
-        os.remove(os.path.join(captpath, f))
+    # cursor = connection.cursor()
+    # sql_delete_query = "Delete from public.z1frame"
+    # cursor.execute(sql_delete_query)
+    # connection.commit()
+    # sql_delete_query = "Delete from public.zdata"
+    # cursor.execute(sql_delete_query)
+    # connection.commit()
+    # captpath = ".\\capture\\"
+    # stream_params = {"-input_framerate": 10, "-livestream": True}
+    # filelist = [f for f in os.listdir(captpath)]
+    # for f in filelist:
+    #     os.remove(os.path.join(captpath, f))
     zdata = zdata.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
@@ -154,8 +154,8 @@ if __name__ == '__main__':
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
-    # cap = cv2.VideoCapture("d:\\test1.mp4")
-    cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
+    cap = cv2.VideoCapture("d:\\test1.mp4")
+    # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
         exit()

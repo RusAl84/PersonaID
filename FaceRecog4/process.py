@@ -121,10 +121,23 @@ def get_lifetime(connection, face_id):
     datarecord = cursor.fetchone()
     if datarecord:
         mill = datarecord[0]
-        milliseconds = int(time.time() * 1000)
-        return milliseconds - mill
+        return mill
+        # milliseconds = int(time.time() * 1000)
+        # return milliseconds - mill
     else:
         return -1
+
+def is_first_dash(connection):
+    cursor = connection.cursor()
+    postgreSQL_select_Query = "select count(*) from public.zdash"
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchone()
+    if datarecord:
+        count = datarecord[0]
+        return count==0
+    else:
+        return -1
+
 
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
@@ -141,12 +154,13 @@ if __name__ == '__main__':
         known_encodings.append(face_encoding)
         # known_names.append(item['name'])
     max_face_distance = 0.5
-    life_time = 30 * 1000
+    life_time = 60 * 1000
     t_life_time = 0
-    cursor = connection.cursor()
-    sql_delete_query = "Delete from public.zdash"
-    cursor.execute(sql_delete_query)
-    connection.commit()
+
+    # cursor = connection.cursor()
+    # sql_delete_query = "Delete from public.zdash"
+    # cursor.execute(sql_delete_query)
+    # connection.commit()
     # time.sleep(0.5)
     while True:
         # for i in range(10):
@@ -160,7 +174,10 @@ if __name__ == '__main__':
                 for bitem in nboxs:
                     face_id = bitem[3]
                     c_life_time = int(time.time() * 1000)
-                    if abs(t_life_time - c_life_time) > life_time:
+                    t_life_time = get_lifetime(connection, face_id)
+                    is_fdash = is_first_dash(connection)
+                    print(f"{c_life_time} {t_life_time} {abs(t_life_time - c_life_time)}   ")
+                    if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) or is_fdash:
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
                         im = Image.open(io.BytesIO(img))
@@ -194,5 +211,4 @@ if __name__ == '__main__':
                         photo = photo.replace('\\', '/')
                         url = "http://127.0.0.1:5000"
                         toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
-                        t_life_time = milliseconds
             time.sleep(0.01)
