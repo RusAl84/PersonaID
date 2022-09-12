@@ -25,7 +25,6 @@ def update_items():
     postgreSQL_select_Query = "SELECT * FROM public.zdash ORDER BY milliseconds DESC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
-
     if datarecord:
         id = datarecord[0]
         milliseconds = datarecord[1]
@@ -78,7 +77,6 @@ def GetMessage(id):
     if id >= 0 and id < len(Items):
         print(Items[id])
         return Items[id], 200
-
         # //update
     else:
         return "not found", 400
@@ -97,9 +95,6 @@ def send_capture(path):
 if __name__ == '__main__':
     gdata = zdata.load()
     Items = []
-    # Items.append(gdata[1])
-    # Items.append(gdata[2])
-    # Items.append(gdata[3])
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     cursor = connection.cursor()
@@ -120,8 +115,6 @@ if __name__ == '__main__':
     filelist = [f for f in os.listdir(captpath)]
     for f in filelist:
         os.remove(os.path.join(captpath, f))
-
-
 
     cursor = connection.cursor()
     postgreSQL_select_Query = "select count(*) from public.zdash"

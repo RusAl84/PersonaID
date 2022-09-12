@@ -127,6 +127,7 @@ def get_lifetime(connection, face_id):
     else:
         return -1
 
+
 def is_first_dash(connection):
     cursor = connection.cursor()
     postgreSQL_select_Query = "select count(*) from public.zdash"
@@ -134,7 +135,19 @@ def is_first_dash(connection):
     datarecord = cursor.fetchone()
     if datarecord:
         count = datarecord[0]
-        return count==0
+        return count == 0
+    else:
+        return -1
+
+
+def get_dash_last_faceid(connection):
+    cursor = connection.cursor()
+    postgreSQL_select_Query = "SELECT name_id FROM public.zdash ORDER BY id DESC LIMIT 1"
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchone()
+    if datarecord:
+        face_id = datarecord[0]
+        return face_id
     else:
         return -1
 
@@ -157,11 +170,6 @@ if __name__ == '__main__':
     life_time = 60 * 1000
     t_life_time = 0
 
-    # cursor = connection.cursor()
-    # sql_delete_query = "Delete from public.zdash"
-    # cursor.execute(sql_delete_query)
-    # connection.commit()
-    # time.sleep(0.5)
     while True:
         # for i in range(10):
         frame, bboxs, milliseconds = fromPG(connection)
@@ -176,8 +184,11 @@ if __name__ == '__main__':
                     c_life_time = int(time.time() * 1000)
                     t_life_time = get_lifetime(connection, face_id)
                     is_fdash = is_first_dash(connection)
+                    c_face_id = get_dash_last_faceid(connection)
                     print(f"{c_life_time} {t_life_time} {abs(t_life_time - c_life_time)}   ")
-                    if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) or is_fdash:
+                    if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) \
+                            or is_fdash \
+                            or (c_face_id > 0 and c_face_id != face_id):
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
                         im = Image.open(io.BytesIO(img))

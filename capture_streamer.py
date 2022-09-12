@@ -19,7 +19,6 @@ def DrawFPS(img, fps):
 
 def findFaces(img, faceDetection):
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
     results = faceDetection.process(imgRGB)
     # print(self.results)
     bboxs = []
@@ -30,11 +29,6 @@ def findFaces(img, faceDetection):
             bbox = int(bboxC.xmin * iw), int(bboxC.ymin * ih), \
                    int(bboxC.width * iw), int(bboxC.height * ih)
             bboxs.append([id, bbox, detection.score])
-            # if len(bbox) > 1:
-            #     img = fancyDraw(img, bboxs)
-            # cv2.putText(img, f'{int(detection.score[0] * 100)}%',
-            #             (bbox[0], bbox[1] - 20), cv2.FONT_HERSHEY_PLAIN,
-            #             2, (255, 0, 255), 2)
     return img, bboxs
 
 
@@ -151,10 +145,10 @@ if __name__ == '__main__':
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
     # cap = cv2.VideoCapture(0)
-    # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
+    cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
-    cap = cv2.VideoCapture("d:\\test1.mp4")
+    # cap = cv2.VideoCapture("d:\\test1.mp4")
     # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
@@ -176,13 +170,10 @@ if __name__ == '__main__':
                                                       model_selection=1)
         gbboxs = []
         gdash = []
-
         while True:
             count += 1
             cTime = time.time()
             fps = 1 / (cTime - pTime)
-            # frame[:] = cam.frames_sent % 255  # grayscale animation
-            # frame = fromPG(connection)
             ret, frame = cap.read()
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
@@ -190,7 +181,6 @@ if __name__ == '__main__':
             if len(frame) > 1:
                 pTime = cTime
                 # DrawFPS(frame, fps)
-                #
                 img, bboxs = findFaces(frame, faceDetection)
                 # print(bboxs)
                 if count % number_of_processing_frame == 0:
@@ -200,18 +190,14 @@ if __name__ == '__main__':
                     else:
                         count -= 1
                 zjson, milliseconds = fromPGZdata(connection)
-
                 if int(milliseconds) > 0:
                     for item in zjson:
                         # iMilliseconds=item[3]
                         # print(item, iMilliseconds, milliseconds)
                         item.append(milliseconds)
                         gbboxs.append(item)
-
                     # cv2.imwrite(".\\capture\\" + str(milliseconds) + str(random.randint(0, 10 ** 10)) + ".jpg", frame)
-
                 frame, gbboxs = DrawRectagle(img, bboxs, gbboxs, detection_score)
-
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
                 cam.sleep_until_next_frame()
