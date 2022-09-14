@@ -151,6 +151,20 @@ def get_dash_last_faceid(connection):
     else:
         return -1
 
+def fasceID_exist(face_id,connection):
+    cursor = connection.cursor()
+    postgreSQL_select_Query = f"SELECT count(*) FROM public.zdash WHERE name_id={face_id}"
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchone()
+    if datarecord:
+        count = datarecord[0]
+        if count > 0:
+            return True
+        else:
+            return False
+    else:
+        return False
+
 
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
@@ -181,14 +195,16 @@ if __name__ == '__main__':
                 # cv2.imwrite("2.jpg", frame)
                 for bitem in nboxs:
                     face_id = bitem[3]
-                    c_life_time = int(time.time() * 1000)
-                    t_life_time = get_lifetime(connection, face_id)
-                    is_fdash = is_first_dash(connection)
-                    c_face_id = get_dash_last_faceid(connection)
-                    print(f"{c_life_time} {t_life_time} {abs(t_life_time - c_life_time)}   ")
-                    if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) \
-                            or is_fdash \
-                            or (c_face_id > 0 and c_face_id != face_id):
+                    # c_life_time = int(time.time() * 1000)
+                    # t_life_time = get_lifetime(connection, face_id)
+                    # is_fdash = is_first_dash(connection)
+                    # c_face_id = get_dash_last_faceid(connection)
+                    # print(f"{c_life_time} {t_life_time} {abs(t_life_time - c_life_time)}   ")
+                    # if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) \
+                    #         or is_fdash \
+                    #         or (c_face_id > 0 and c_face_id != face_id):
+                    face_id_exist = fasceID_exist(face_id, connection)
+                    if not face_id_exist:
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
                         im = Image.open(io.BytesIO(img))
