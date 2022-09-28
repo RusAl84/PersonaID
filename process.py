@@ -204,6 +204,7 @@ if __name__ == '__main__':
                     #         or is_fdash \
                     #         or (c_face_id > 0 and c_face_id != face_id):
                     face_id_exist = fasceID_exist(face_id, connection)
+                    # face_id_exist = False
                     if not face_id_exist:
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
