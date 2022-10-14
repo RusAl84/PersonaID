@@ -144,8 +144,9 @@ if __name__ == '__main__':
     zdata = zdata.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
-    cap = cv2.VideoCapture(1)
-    # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
+    # cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
+    # cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("d:\\test1.mp4")
