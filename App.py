@@ -4,8 +4,9 @@ import atexit
 import psycopg2
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import zdata
 from flask import send_from_directory
+import zdata
+
 
 app = Flask(__name__)
 CORS(app)
@@ -123,6 +124,5 @@ if __name__ == '__main__':
     if datarecord:
         count = datarecord[0]
         print(count == 0)
-
 
     app.run()

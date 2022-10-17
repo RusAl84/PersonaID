@@ -144,13 +144,13 @@ if __name__ == '__main__':
     zdata = zdata.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
-    # cap = cv2.VideoCapture(1)
-    cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
+    # cap = cv2.VideoCapture(2)
+    # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("d:\\test1.mp4")
-    # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
+    cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
@@ -163,7 +163,7 @@ if __name__ == '__main__':
         count = 0
         pTime = 0
         max_fps = cap.get(cv2.CAP_PROP_FPS)
-        detection_score = 0.4  # порог чувствительрности для поиска лица от 0 до 1
+        detection_score = 0.4  # порог чувствительности для поиска лица от 0 до 1
         minDetectionCon = 0.6
         mpFaceDetection = mp.solutions.face_detection
         # mpDraw = mp.solutions.drawing_utils
