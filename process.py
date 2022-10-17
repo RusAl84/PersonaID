@@ -11,6 +11,8 @@ import simplejpeg
 import face_recognition
 import zdata
 from PIL import Image
+import time
+from pygame import mixer
 
 
 def toPG(connection, nboxs, milliseconds):
@@ -151,7 +153,8 @@ def get_dash_last_faceid(connection):
     else:
         return -1
 
-def fasceID_exist(face_id,connection):
+
+def fasceID_exist(face_id, connection):
     cursor = connection.cursor()
     postgreSQL_select_Query = f"SELECT count(*) FROM public.zdash WHERE name_id={face_id}"
     cursor.execute(postgreSQL_select_Query)
@@ -164,6 +167,14 @@ def fasceID_exist(face_id,connection):
             return False
     else:
         return False
+
+
+def playSound(sound):
+    mixer.init()
+    mixer.music.load(sound)
+    mixer.music.play()
+    while mixer.music.get_busy():  # wait for music to finish playing
+        time.sleep(2)
 
 
 if __name__ == '__main__':
@@ -239,4 +250,9 @@ if __name__ == '__main__':
                         photo = photo.replace('\\', '/')
                         url = "http://127.0.0.1:5000"
                         toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
+                    else:
+                        sound = str(zdata[face_id]['filename'])
+                        sound = sound.replace("jpg", "mp3")
+                        sound = "." + sound.replace('\\', '/')
+                        playSound(sound)
             time.sleep(0.01)
