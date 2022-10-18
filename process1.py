@@ -8,12 +8,11 @@ import psycopg2
 import time
 import numpy as np
 import simplejpeg
-import face_recognition
+# import face_recognition
 import zdata
 from PIL import Image
-import time
+from deepface import DeepFace
 from pygame import mixer
-
 
 def toPG(connection, nboxs, milliseconds):
     # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
@@ -81,23 +80,43 @@ def fromPG(connection):
         img = cv2.imdecode(img, cv2.IMREAD_COLOR)
     return img, bboxs, milliseconds
 
+def compare(self, embeddings, embedding2, threshold):
+    for i in range(len(embeddings)):
+        diff = np.subtract(embeddings[i], embedding2)
+        dist = np.sum(np.square(diff), 0)
+        if dist < threshold:
+            return i
+    return -1
 
 def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
     face_locations = [(bbox[1][1], bbox[1][0] + bbox[1][2], bbox[1][1] + bbox[1][3], bbox[1][0]) for bbox in bboxs]
     rgb_frame = frame[:, :, ::-1]
+
+    models = ["VGG-Face", "Facenet", "OpenFace", "DeepFace", "Dlib", "ArcFace"]
+    backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
+
+    ## загрузка embending
+    for item in zdata:
+        image = Image.open(path + item['filename'])
+        known_images.append(image)
+        face_encoding = DeepFace.represent(image, model_name=models[5],
+                                           enforce_detection=False, detector_backend=backends[5])
+        known_encodings.append(face_encoding / np.linalg.norm(face_encoding))
+    ##
+
     face_names = []
-    face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
+    face_encodings = DeepFace.represent(image, model_name=models[5],
+                                       enforce_detection=False, detector_backend=backends[5])
 
     for face_encoding in face_encodings:
         # See if the face is a match for the known face(s)
-        matches = face_recognition.compare_faces(known_encodings, face_encoding)
-        name = -1
+        matches = compare(known_encodings, face_encoding)
 
         # use the known face with the smallest distance to the new face
         face_distances = face_recognition.face_distance(known_encodings, face_encoding)
         best_match_index = np.argmin(face_distances)
 
-        if matches[best_match_index] and min(face_distances) < max_face_distance:
+        if matches != -1:
             name = best_match_index
             # print(name, face_distances)
 
@@ -153,8 +172,7 @@ def get_dash_last_faceid(connection):
     else:
         return -1
 
-
-def fasceID_exist(face_id, connection):
+def fasceID_exist(face_id,connection):
     cursor = connection.cursor()
     postgreSQL_select_Query = f"SELECT count(*) FROM public.zdash WHERE name_id={face_id}"
     cursor.execute(postgreSQL_select_Query)
@@ -167,7 +185,6 @@ def fasceID_exist(face_id, connection):
             return False
     else:
         return False
-
 
 def playSound(sound):
     import os.path
@@ -187,13 +204,22 @@ if __name__ == '__main__':
     path, filename = os.path.split(full_path)
     known_images = []
     known_encodings = []
+    # known_names = []
+
+    models = ["VGG-Face", "Facenet", "OpenFace", "DeepFace", "Dlib", "ArcFace"]
+    backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
+
+    ## загрузка embending
     for item in zdata:
-        image = face_recognition.load_image_file(path + item['filename'])
+        image = Image.open(path + item['filename'])
+        # known_names.append()
         known_images.append(image)
-        face_encoding = face_recognition.face_encodings(image)[0]
-        known_encodings.append(face_encoding)
-        # known_names.append(item['name'])
-    max_face_distance = 0.5
+        face_encoding = DeepFace.represent(image, model_name=models[3],
+                                       enforce_detection=False, detector_backend=backends[5])
+        known_encodings.append(face_encoding / np.linalg.norm(face_encoding))
+    ##
+
+    max_face_distance = 1
     life_time = 60 * 1000
     t_life_time = 0
 

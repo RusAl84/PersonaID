@@ -32,7 +32,7 @@ def findFaces(img, faceDetection):
     return img, bboxs
 
 
-def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1, dpix=100):
+def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=2, dpix=100):
     for box in bbox:
         num = box[0]
         dots = box[1]
@@ -42,7 +42,8 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1, dpix=100):
         if score >= detection_score:
             x, y, w, h = dots
             x1, y1 = x + w, y + h
-            cv2.rectangle(img, dots, (255, 0, 255), rt)
+            color = (0, 255, 0)
+            cv2.rectangle(img, dots, color, rt)
             cMilliseconds = int(time.time() * 1000)
             newgbboxs = []
             num = -1
@@ -61,10 +62,11 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=1, dpix=100):
                         if d < dpix:
                             name = zdata[gitem[3]]['name']
             gbboxs = newgbboxs
-            fontScale = 2
+            fontScale = 1
+            color=(0, 255, 0)
             cv2.putText(img, name,
                         (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
-                        fontScale, (255, 0, 255), 3)
+                        fontScale, color, 2)
             # cv2.putText(img, name,
             #             (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
             #             0.5, (255, 0, 255), 1)
@@ -144,12 +146,12 @@ if __name__ == '__main__':
     zdata = zdata.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
-    # cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(2)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.25:554/ISAPI/Streaming/Channels/1")
-    cap = cv2.VideoCapture("d:\\test1.mp4")
+    # cap = cv2.VideoCapture("d:\\test1.mp4")
     # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     if not cap.isOpened():
         print("Cannot open camera")
