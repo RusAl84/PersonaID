@@ -12,4 +12,5 @@ def load(filename="./photo/zdata.json"):
 
 if __name__ == '__main__':
     zdata = load()
-    print(zdata[4]['name'])
+    for item in zdata:
+        print(f"{item['filename']} {item['name']} {item['desc']}")

@@ -12,7 +12,10 @@ import face_recognition
 import zdata
 from PIL import Image
 import time
-from pygame import mixer
+
+from playsound import playSound
+
+global endPlayTime
 
 
 def toPG(connection, nboxs, milliseconds):
@@ -89,17 +92,13 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
 
     for face_encoding in face_encodings:
-        # See if the face is a match for the known face(s)
         matches = face_recognition.compare_faces(known_encodings, face_encoding)
         name = -1
-
-        # use the known face with the smallest distance to the new face
         face_distances = face_recognition.face_distance(known_encodings, face_encoding)
         best_match_index = np.argmin(face_distances)
 
         if matches[best_match_index] and min(face_distances) < max_face_distance:
             name = best_match_index
-            # print(name, face_distances)
 
         face_names.append(name)
     nbboxs = []
@@ -169,20 +168,12 @@ def fasceID_exist(face_id, connection):
         return False
 
 
-def playSound(sound):
-    import os.path
-    if os.path.exists(sound):
-        mixer.init()
-        mixer.music.load(sound)
-        mixer.music.play()
-        while mixer.music.get_busy():  # wait for music to finish playing
-            time.sleep(4)
-
-
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     zdata = zdata.load()
+    global endPlayTime
+    endPlayTime = 1
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
     known_images = []
@@ -193,6 +184,7 @@ if __name__ == '__main__':
         face_encoding = face_recognition.face_encodings(image)[0]
         known_encodings.append(face_encoding)
         # known_names.append(item['name'])
+    print("Embeddings is load")
     max_face_distance = 0.5
     life_time = 60 * 1000
     t_life_time = 0
@@ -216,8 +208,9 @@ if __name__ == '__main__':
                     # if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) \
                     #         or is_fdash \
                     #         or (c_face_id > 0 and c_face_id != face_id):
-                    face_id_exist = fasceID_exist(face_id, connection)
-                    # face_id_exist = False
+
+                    # face_id_exist = fasceID_exist(face_id, connection)
+                    face_id_exist = False
                     if not face_id_exist:
                         bboxs = bitem[1]
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
@@ -239,7 +232,7 @@ if __name__ == '__main__':
                         pixels = (x1, y1, x2, y2)
                         fname_str = ".\\capture\\" + str(milliseconds) + "_" + str(random.randint(0, 10 ** 10)) + ".jpg"
                         im_crop = im.crop(pixels)
-                        im_crop.save(fname_str, quality=80)
+                        im_crop.save(fname_str, quality=90)
                         print(bitem, zdata[face_id]['name'], face_id, milliseconds)
                         capture = fname_str.replace('.', '')
                         capture = capture.replace('\\', '/')
@@ -252,9 +245,10 @@ if __name__ == '__main__':
                         photo = photo.replace('\\', '/')
                         url = "http://127.0.0.1:5000"
                         toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
-                    else:
+                        # else:
                         sound = str(zdata[face_id]['filename'])
                         sound = sound.replace("jpg", "mp3")
                         sound = "." + sound.replace('\\', '/')
-                        playSound(sound)
+
+                        endPlayTime = playSound(sound, endPlayTime)
             time.sleep(0.01)

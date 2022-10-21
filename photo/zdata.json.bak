@@ -1,0 +1,224 @@
+[{
+        "filename": "\\photo\\Golovanova.jpg",
+        "name": "Голованова Наталия Борисовна",
+        "sound": "\\photo\\Golovanova.ogg",
+        "desc": "Заместитель первого проректора РТУ МИРЭА - Российский технологический университет"
+    },
+    {
+        "filename": "\\photo\\Gorin.jpg",
+        "name": "Горин Денис Станиславович",
+        "sound": "\\photo\\Gorin.ogg",
+        "desc": "Заведующий кафедрой Кафедра КБ-3 «Безопасность программных решений» РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\Kudzh.jpg",
+        "name": "Кудж Станислав Алексеевич",
+		"sound": "\\photo\\kudzh.mp3",
+        "desc": "Ректор РТУ МИРЭА - Российский технологический университет"
+    },
+	    {
+        "filename": "\\photo\\Kudzh1.jpg",
+        "name": "Кудж Станислав Алексеевич",
+		"sound": "\\photo\\kudzh.mp3",
+        "desc": "Ректор РТУ МИРЭА - Российский технологический университет"
+    },
+	    {
+        "filename": "\\photo\\Kudzh2.jpg",
+        "name": "Кудж Станислав Алексеевич",
+		"sound": "\\photo\\kudzh.mp3",
+        "desc": "Ректор РТУ МИРЭА - Российский технологический университет"
+    },
+    {
+        "filename": "\\photo\\Rusakov.jpg",
+        "name": "Русаков Алексей Михайлович",
+        "sound": "\\photo\\Rusakov.ogg",
+        "desc": "Директор проекта Персона ID РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\Timoshenko.jpg",
+        "name": "Тимошенко Андрей Всеволодович",
+        "sound": "\\photo\\Timoshenko.ogg",
+        "desc": "Проректор по учебной работе РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\Trubienko.jpg",
+        "name": "Трубиенко Олег Владимирович",
+        "sound": "\\photo\\Trubienko.ogg",
+        "desc": "Заведующий кафедрой КБ-2 «Прикладные информационные технологии» РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\Bakaev.jpg",
+        "name": "Бакаев Анатолий Александрович",
+        "sound": "\\photo\\Bakaev.ogg",
+        "desc": "Директор института кибербезопасности и цифровых технологий РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\BaturovaGV.jpg",
+        "name": "Батурова Галина Bикторовна",
+        "sound": "\\photo\\BaturovaGV.ogg",
+        "desc": "Заместитель начальника ЦИМДАА РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\FisenkoGV.jpg",
+        "name": "Фисенко Геннадий Валентинович",
+        "sound": "\\photo\\FisenkoGV.ogg",
+        "desc": "Проректор РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\GmyraSN.jpg",
+        "name": "Гмыра Сергей Николаевич",
+        "sound": "\\photo\\GmyraSN.ogg",
+        "desc": "Генеральный директор Байкал Яхт Групп"
+    },
+    {
+        "filename": "\\photo\\GrafovYG.jpg",
+        "name": "Графов Юрий Германович",
+        "sound": "\\photo\\GrafovYG.ogg",
+        "desc": "Проректор РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\GritsunAS.jpg",
+        "name": "Грицун Андрей Сергевич",
+        "sound": "\\photo\\GritsunAS.ogg",
+        "desc": "Заместитель директора ИВМ РАН"
+    },
+    {
+        "filename": "\\photo\\IgnatenkoVA.jpg",
+        "name": "Игнатенко Валентина Алексеевна",
+        "sound": "\\photo\\IgnatenkoVA.ogg",
+        "desc": "Заместитель министра министерство здравоохранения Краснодарского края"
+    },
+    {
+        "filename": "\\photo\\IgnatenkoVA2.jpg",
+        "name": "Игнатенко Валентина Алексеевна",
+        "sound": "\\photo\\IgnatenkoVA.ogg",
+        "desc": "Заместитель министра министерство здравоохранения Краснодарского края"
+    },
+    {
+        "filename": "\\photo\\KomarovaTE.jpg",
+        "name": "Комарова Тамара Евгеньевна",
+        "sound": "\\photo\\KomarovaTE.ogg",
+        "desc": "Начальник Управления по работе с абитуриентами РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\KonovalovAM.jpg",
+        "name": "Коновалов Алексей Михайлович",
+        "sound": "\\photo\\KonovalovAM.ogg",
+        "desc": "Заместитель директора ИКИ НМП, начальник Центра исследований морской деятельности, Арктики и Антарктики (ЦИМДАА)"
+    },
+    {
+        "filename": "\\photo\\KotenevMB.jpg",
+        "name": "Котенев Михаил Борисович",
+        "sound": "\\photo\\KotenevMB.ogg",
+        "desc": "Заместитель директора ИКИ НМП, начальник Центра комплексных исследований национальной безопасности в области морской деятельности (ЦКИ НБ МД)"
+    },
+    {
+        "filename": "\\photo\\KravchenkoPN.jpg",
+        "name": "Кравченко Павел Николаевич",
+        "sound": "\\photo\\KravchenkoPN.ogg",
+        "desc": "Проректор по научной работе Московский университет имени С.Ю. Витте"
+    },
+    {
+        "filename": "\\photo\\LeonovDA.jpg",
+        "name": "Леонов Дмитрий Алексеевич",
+        "sound": "\\photo\\LeonovDA.ogg",
+        "desc": "Директор технопарка Альтаир"
+    },
+    {
+        "filename": "\\photo\\LugaEA.jpg",
+        "name": "Луговая Елена Александровна",
+        "sound": "\\photo\\LugaEA.ogg",
+        "desc": "Директор Федеральное государственное бюджетное учреждение науки Научно-исследовательский центр «Арктика» Дальневосточного отделения Российской академии наук"
+    },
+    {
+        "filename": "\\photo\\MegoryVV.jpg",
+        "name": "Мегорский Владимир Владимирович",
+        "sound": "\\photo\\MegoryVV.ogg",
+        "desc": "Директор Филиал «Научно-исследовательская лаборатория Федерального бюджетного учреждения науки «Северо-Западный научный центр гигиены и общественного здоровья». North-West Public Health Research Center"
+    },
+    {
+        "filename": "\\photo\\OstrovskayaEV.jpg",
+        "name": "Островская Елена Васильевна",
+        "sound": "\\photo\\OstrovskayaEV.ogg",
+        "desc": "Директор Каспийский морской научно-исследовательский центр"
+    },
+    {
+        "filename": "\\photo\\PetushkovGV.jpg",
+        "name": "Петушков Григорий Валерьевич",
+        "sound": "\\photo\\PetushkovGV.ogg",
+        "desc": "Проректор РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\ProkopovNI.jpg",
+        "name": "Прокопов Николай Иванович",
+        "sound": "\\photo\\ProkopovNI.ogg",
+        "desc": "Первый проректор РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\RagutkinAV.jpg",
+        "name": "Рагуткин Александр Викторович",
+        "sound": "\\photo\\RagutkinAV.ogg",
+        "desc": "Проректор РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\SigovAS.jpg",
+        "name": "Сигов Александр Сергеевич",
+        "sound": "\\photo\\SigovAS.ogg",
+        "desc": "Президент РТУ МИРЭА"
+    },
+    {
+        "filename": "\\photo\\StaroverovPV.jpg",
+        "name": "Староверов Платон Васильевич",
+        "sound": "\\photo\\StaroverovPV.ogg",
+        "desc": "Вице-президент Ассоциация полярников Санкт-Петербурга"
+    },
+    {
+        "filename": "\\photo\\VeselovAB.jpg",
+        "name": "Веселов Алексей Викторович",
+        "sound": "\\photo\\VeselovAB.ogg",
+        "desc": "Заместитель министра – начальник управления организации медицинской и фармацевтической помощи населению Министерство здравоохранения Хабаровского края"
+    },
+    {
+        "filename": "\\photo\\VeselovAB2.jpg",
+        "name": "Веселов Алексей Викторович",
+        "sound": "\\photo\\VeselovAB.ogg",
+        "desc": "Заместитель министра – начальник управления организации медицинской и фармацевтической помощи населению Министерство здравоохранения Хабаровского края"
+    },
+    {
+        "filename": "\\photo\\VinnikovKA.jpg",
+        "name": "Винников Кирилл Андреевич",
+        "sound": "\\photo\\VinnikovKA.ogg",
+        "desc": "Директор Института Мирового окена Дальневосточный федеральный университет"
+    },
+    {
+        "filename": "\\photo\\Golubevaneither.jpg",
+        "name": "Голубева Наталия Ивановна",
+        "sound": "\\photo\\Golubevaneither.ogg",
+        "desc": "Заместитель директора Департамента координации деятельности научных организаций Министерство науки и высшего образования РФ"
+    },
+    {
+        "filename": "\\photo\\RudnevDS.jpg",
+        "name": "Руднев Денис Сергеевич",
+        "sound": "\\photo\\RudnevDS.ogg",
+        "desc": "Генеральный директор АО «Столетика»"
+    },
+    {
+        "filename": "\\photo\\BoykoEr.jpg",
+        "name": "Бойко Евгений Рафаилович",
+        "sound": "\\photo\\BoykoEr.ogg",
+        "desc": "Директор Институт физиологии ФИЦ Коми НЦ УрО РАН"
+    },
+    {
+        "filename": "\\photo\\.jpg",
+        "name": "",
+        "sound": "\\photo\\.ogg",
+        "desc": ""
+    },
+    {
+        "filename": "\\photo\\.jpg",
+        "name": "",
+        "sound": "\\photo\\.ogg",
+        "desc": ""
+    }
+
+]

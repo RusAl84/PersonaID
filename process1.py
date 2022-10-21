@@ -4,6 +4,7 @@ import json
 import os
 import random
 import cv2
+import face_recognition
 import psycopg2
 import time
 import numpy as np
@@ -99,7 +100,7 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
     for item in zdata:
         image = Image.open(path + item['filename'])
         known_images.append(image)
-        face_encoding = DeepFace.represent(image, model_name=models[5],
+        face_encoding = DeepFace.represent(image, model_name=models[3],
                                            enforce_detection=False, detector_backend=backends[5])
         known_encodings.append(face_encoding / np.linalg.norm(face_encoding))
     ##
