@@ -9,7 +9,7 @@ import time
 import numpy as np
 import simplejpeg
 import face_recognition
-import zdata
+import zdata as zd
 from PIL import Image
 import time
 
@@ -171,19 +171,15 @@ def fasceID_exist(face_id, connection):
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-    zdata = zdata.load()
+    zdata = zd.load()
     global endPlayTime
     endPlayTime = 1
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
     known_images = []
     known_encodings = []
-    for item in zdata:
-        image = face_recognition.load_image_file(path + item['filename'])
-        known_images.append(image)
-        face_encoding = face_recognition.face_encodings(image)[0]
-        known_encodings.append(face_encoding)
-        # known_names.append(item['name'])
+    ## TODO: Сделать проверку новых картинок
+    (known_encodings, known_images, known_names) = zd.loadEmb()
     print("Embeddings is load")
     max_face_distance = 0.5
     life_time = 60 * 1000
