@@ -32,7 +32,7 @@ def findFaces(img, faceDetection):
     return img, bboxs
 
 
-def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=2, dpix=100):
+def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=100):
     for box in bbox:
         num = box[0]
         dots = box[1]
@@ -62,7 +62,7 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=2, dpix=100):
                         if d < dpix:
                             name = zdata[gitem[3]]['name']
             gbboxs = newgbboxs
-            fontScale = 1
+            fontScale = 2
             color=(0, 255, 0)
             cv2.putText(img, name,
                         (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
@@ -90,7 +90,7 @@ def toPG(connection, img, bbox):
     # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
     # _, data = cv2.imencode('.jpg', img, encode_param)
     # frame = data.tobytes()
-    frame = simplejpeg.encode_jpeg(image=img, quality=70)
+    frame = simplejpeg.encode_jpeg(image=img, quality=90)
     milliseconds = int(time.time() * 1000)
     dt = datetime.datetime.fromtimestamp(milliseconds / 1000.0)
     # print(dt)
@@ -146,7 +146,16 @@ if __name__ == '__main__':
     zdata = zdata.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
+    HIGH_VALUE = 10000
+    WIDTH = HIGH_VALUE
+    HEIGHT = HIGH_VALUE
     cap = cv2.VideoCapture(2)
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print(width, height)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
@@ -164,7 +173,7 @@ if __name__ == '__main__':
         sframe = []
         count = 0
         pTime = 0
-        max_fps = cap.get(cv2.CAP_PROP_FPS)
+        # max_fps = cap.get(cv2.CAP_PROP_FPS)
         detection_score = 0.4  # порог чувствительности для поиска лица от 0 до 1
         minDetectionCon = 0.6
         mpFaceDetection = mp.solutions.face_detection
@@ -201,6 +210,7 @@ if __name__ == '__main__':
                         gbboxs.append(item)
                     # cv2.imwrite(".\\capture\\" + str(milliseconds) + str(random.randint(0, 10 ** 10)) + ".jpg", frame)
                 frame, gbboxs = DrawRectagle(img, bboxs, gbboxs, detection_score)
+                # print(tuple(frame.shape[1::-1]))
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
                 cam.sleep_until_next_frame()

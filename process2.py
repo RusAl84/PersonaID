@@ -109,7 +109,7 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
         x, y, w, h = box
         cropped = frame[y:y + h, x:x + w]
         # cv2.imwrite("./cropped.png", cropped)
-        tEMB = DeepFace.represent(cropped, model_name=models[5],
+        tEMB = DeepFace.represent(cropped, model_name=models[1],
                                                  enforce_detection=False, detector_backend=backends[5])
         tEMB = tEMB/np.linalg.norm(tEMB)
         face_encodings.append(tEMB)
@@ -117,10 +117,10 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
     for face_encoding in face_encodings:
         # See if the face is a match for the known face(s)
         matches = compare(known_encodings, face_encoding)
-        # print(matches)
+        print(matches)
         # use the known face with the smallest distance to the new face
         best_match_index = min(matches, key=matches.get)
-        treshold = 0.3
+        treshold = 0.7
         if len(matches) != -1 and matches[best_match_index] < treshold:
             name = best_match_index
             print(matches[best_match_index])
@@ -200,9 +200,6 @@ if __name__ == '__main__':
     known_images = []
     known_encodings = []
     known_names = []
-
-    models = ["VGG-Face", "Facenet", "OpenFace", "DeepFace", "Dlib", "ArcFace"]
-    backends = ['opencv', 'ssd', 'dlib', 'mtcnn', 'retinaface', 'mediapipe']
 
     ## TODO: Сделать проверку новых картинок
     (known_encodings, known_images, known_names) = zd.loadEmb()

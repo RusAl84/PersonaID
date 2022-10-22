@@ -7,13 +7,12 @@ from flask_cors import CORS
 from flask import send_from_directory
 import zdata
 
-
 app = Flask(__name__)
 CORS(app)
 
 Items = []
 gdata = []
-IDs=set()
+IDs = set()
 
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -66,9 +65,10 @@ atexit.register(lambda: scheduler.shutdown())
 def dafault_route():
     return 'FaceRecog Items:' + str(len(Items))
 
+
 @app.route('/getid')
 def getid():
-    return str(len(Items)-1)
+    return str(len(Items) - 1)
 
 
 # получение сообщений

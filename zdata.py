@@ -35,7 +35,7 @@ def saveEmb2():
         known_names.append(item['name'])
         known_images.append(image)
         img = np.asarray(image)
-        face_encoding = DeepFace.represent(img, model_name=models[5],
+        face_encoding = DeepFace.represent(img, model_name=models[1],
                                            enforce_detection=False, detector_backend=backends[5])
         known_encodings.append(face_encoding / np.linalg.norm(face_encoding))
     with open('known_encodings.pickle', 'wb') as handle:
