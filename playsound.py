@@ -26,5 +26,8 @@ def playSound(filename, endPlayTime = 0):
 
 
 if __name__ == "__main__":
-    filename = ".\\photo\\KudzhSA.mp3"
-    playSound(filename)
+    while True:
+        filename = ".\\photo\\KudzhSA.mp3"
+        playSound(filename)
+        time.sleep(0.5)
+

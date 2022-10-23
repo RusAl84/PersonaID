@@ -13,10 +13,6 @@ import zdata as zd
 from PIL import Image
 import time
 
-from playsound import playSound
-
-global endPlayTime
-
 
 def toPG(connection, nboxs, milliseconds):
     # encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 60]
@@ -172,13 +168,10 @@ if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     zdata = zd.load()
-    global endPlayTime
-    endPlayTime = 1
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
     known_images = []
     known_encodings = []
-    ## TODO: Сделать проверку новых картинок
     (known_encodings, known_images, known_names) = zd.loadEmb()
     print("Embeddings is load")
     max_face_distance = 0.5
@@ -245,6 +238,5 @@ if __name__ == '__main__':
                         sound = str(zdata[face_id]['filename'])
                         sound = sound.replace("jpg", "mp3")
                         sound = "." + sound.replace('\\', '/')
-
-                        endPlayTime = playSound(sound, endPlayTime)
+                        # endPlayTime = playSound(sound, endPlayTime)
             time.sleep(0.01)

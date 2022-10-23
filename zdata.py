@@ -1,7 +1,7 @@
 import json
 import os
 from PIL import Image
-from deepface import DeepFace
+# from deepface import DeepFace
 import numpy as np
 import pickle
 import face_recognition
