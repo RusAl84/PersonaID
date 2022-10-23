@@ -167,6 +167,7 @@ def fasceID_exist(face_id, connection):
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
+    connection.autocommit = True
     zdata = zd.load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
@@ -240,3 +241,5 @@ if __name__ == '__main__':
                         sound = "." + sound.replace('\\', '/')
                         # endPlayTime = playSound(sound, endPlayTime)
             time.sleep(0.01)
+    connection.commit()
+    connection.close()

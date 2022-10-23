@@ -6,12 +6,14 @@ import numpy as np
 import pickle
 import face_recognition
 
+
 def load(filename="./photo/zdata.json"):
     with open(filename, 'r', encoding='utf-8') as file:
         jsonstring = file.read()
     zdata = []
     zdata = json.loads(jsonstring)
     return zdata
+
 
 def loadEmb():
     with open('known_encodings.pickle', 'rb') as handle:
@@ -21,6 +23,7 @@ def loadEmb():
     with open('known_names.pickle', 'rb') as handle:
         known_names = pickle.load(handle)
     return (known_encodings, known_images, known_names)
+
 
 def saveEmb2():
     full_path = os.path.realpath(__file__)
@@ -45,6 +48,7 @@ def saveEmb2():
     with open('known_names.pickle', 'wb') as handle:
         pickle.dump(known_names, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 def saveEmb():
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
@@ -64,8 +68,11 @@ def saveEmb():
     with open('known_names.pickle', 'wb') as handle:
         pickle.dump(known_names, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
 if __name__ == '__main__':
     zdata = load()
+    num = 0
     for item in zdata:
-        print(f"{item['filename']} {item['name']} {item['desc']}")
-    saveEmb()
+        print(f"{num} {item['filename']} {item['name']} {item['desc']}")
+        num += 1
+    # saveEmb()

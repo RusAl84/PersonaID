@@ -32,7 +32,7 @@ def findFaces(img, faceDetection):
     return img, bboxs
 
 
-def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=100):
+def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=80):
     for box in bbox:
         num = box[0]
         dots = box[1]
@@ -66,7 +66,7 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=100):
             color=(0, 255, 0)
             cv2.putText(img, name,
                         (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
-                        fontScale, color, 2)
+                        fontScale, color, 3)
             # cv2.putText(img, name,
             #             (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
             #             0.5, (255, 0, 255), 1)
@@ -131,6 +131,7 @@ def fromPGZdata(connection):
 if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
+    connection.autocommit = True
     # cursor = connection.cursor()
     # sql_delete_query = "Delete from public.z1frame"
     # cursor.execute(sql_delete_query)
@@ -214,3 +215,5 @@ if __name__ == '__main__':
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)
                 cam.sleep_until_next_frame()
+    connection.commit()
+    connection.close()

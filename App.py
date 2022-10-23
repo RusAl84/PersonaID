@@ -98,6 +98,7 @@ if __name__ == '__main__':
     Items = []
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
+    connection.autocommit = True
     cursor = connection.cursor()
     sql_delete_query = 'Delete from public.zdash'
     cursor.execute(sql_delete_query)
@@ -126,3 +127,5 @@ if __name__ == '__main__':
         print(count == 0)
 
     app.run()
+    connection.commit()
+    connection.close()
