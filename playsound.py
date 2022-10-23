@@ -64,7 +64,7 @@ if __name__ == "__main__":
     global PlayTime
     PlayTime = {}
     global delta
-    # заменить на побольше
+    # задержка звука
     delta = 1000 * 30
     zdata = zd.load()
     num = 0

@@ -46,6 +46,7 @@ def update_items():
             dic['capture'] = capture
             dic['name_id'] = name_id
             dic['desc'] = gdata[int(name_id)]["desc"]
+
             Items.append(dic)
             IDs.add(id)
 
@@ -54,7 +55,7 @@ def update_items():
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=update_items, trigger="interval", seconds=0.5)
+scheduler.add_job(func=update_items, trigger="interval", seconds=1)
 scheduler.start()
 
 # Shut down the scheduler when exiting the app

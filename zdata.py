@@ -75,4 +75,5 @@ if __name__ == '__main__':
     for item in zdata:
         print(f"{num} {item['filename']} {item['name']} {item['desc']}")
         num += 1
-    # saveEmb()
+    saveEmb()
+    print("embeddings is generated")

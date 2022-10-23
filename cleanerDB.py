@@ -7,7 +7,7 @@ if __name__ == "__main__":
                                   database="personadb")
     connection.autocommit = True
 
-    minutes = 10
+    minutes = 5
 
     while True:
         milliseconds = int(time.time() * 1000) - 1000 * 60 * minutes
