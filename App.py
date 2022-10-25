@@ -5,19 +5,24 @@ import psycopg2
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask import send_from_directory
-import zdata
+import zdata as zd
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
+global Items
+global gdata
+global DBsize
+global IDs
 
 app = Flask(__name__)
 CORS(app)
 
-Items = []
-gdata = []
-IDs = set()
-
-from apscheduler.schedulers.background import BackgroundScheduler
-
 
 def update_items():
+    global Items
+    global gdata
+    global DBsize
+    global IDs
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
 
@@ -25,6 +30,11 @@ def update_items():
     postgreSQL_select_Query = "SELECT * FROM public.zdash ORDER BY milliseconds DESC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
+
+    if DBsize != zd.getDBsize():
+        DBsize = zd.getDBsize()
+        gdata = zd.getDBsize()
+
     if datarecord:
         id = datarecord[0]
         milliseconds = datarecord[1]
@@ -46,7 +56,6 @@ def update_items():
             dic['capture'] = capture
             dic['name_id'] = name_id
             dic['desc'] = gdata[int(name_id)]["desc"]
-
             Items.append(dic)
             IDs.add(id)
 
@@ -95,8 +104,14 @@ def send_capture(path):
 
 
 if __name__ == '__main__':
-    gdata = zdata.load()
+    global Items
+    global gdata
+    global DBsize
+    global IDs
+    gdata = zd.load()
+    DBsize = zd.getDBsize()
     Items = []
+    IDs = set()
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     connection.autocommit = True

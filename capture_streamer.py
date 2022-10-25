@@ -9,7 +9,7 @@ import time
 import os
 import simplejpeg
 import mediapipe as mp
-import zdata
+import zdata as zd
 import random
 
 
@@ -144,13 +144,13 @@ if __name__ == '__main__':
     # filelist = [f for f in os.listdir(captpath)]
     # for f in filelist:
     #     os.remove(os.path.join(captpath, f))
-    zdata = zdata.load()
+    zdata = zd.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
     HIGH_VALUE = 10000
     WIDTH = HIGH_VALUE
     HEIGHT = HIGH_VALUE
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(1)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
@@ -183,7 +183,14 @@ if __name__ == '__main__':
                                                       model_selection=1)
         gbboxs = []
         gdash = []
+        DBsize = zd.getDBsize()
         while True:
+            if DBsize != zd.getDBsize():
+                DBsize = zd.getDBsize()
+                zdata = zd.load()
+
+
+
             count += 1
             cTime = time.time()
             fps = 1 / (cTime - pTime)

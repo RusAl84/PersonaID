@@ -50,12 +50,14 @@ def saveEmb2():
 
 
 def saveEmb():
+    zdata = load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
     known_images = []
     known_encodings = []
     known_names = []
     for item in zdata:
+        print(path + item['filename'])
         image = face_recognition.load_image_file(path + item['filename'])
         known_images.append(image)
         face_encoding = face_recognition.face_encodings(image)[0]
@@ -107,19 +109,5 @@ if __name__ == '__main__':
     # for item in zdata:
     #     print(f"{num} {item['filename']} {item['name']} {item['desc']}")
     #     num += 1
-    # saveEmb()
+    saveEmb()
     # print("embeddings is generated")
-    lines = []
-    with open("./new/data.txt", 'r', encoding='utf-8') as file:
-        lines = file.readlines()
-    dicRecord = dict()
-    dicRecord["filename"] = "\\photo\\" + lines[0].replace("\n", "")
-    dicRecord["name"] = lines[1].replace("\n", "")
-    dicRecord["desc"] = lines[2].replace("\n", "")
-    zdata.append(dicRecord)
-    jsonstring = json.dumps(zdata)
-    jsonstring = jsonstring.replace("\\/", "/").encode().decode('unicode_escape')
-    jsonstring = jsonstring.replace("\\", "\\\\")
-    # print(jsonstring)
-    with open("./new/zdata.json", 'w', encoding='utf-8') as file:
-        file.write(jsonstring.encode().decode("UTF-8"))

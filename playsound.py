@@ -1,14 +1,10 @@
-# import datetime
 import time
-# from mutagen.mp3 import MP3
 import psycopg2
 from pygame import mixer
 import zdata as zd
 import os.path
-
 global delta
 global PlayTime
-
 
 
 def playSound(filename):
@@ -19,7 +15,13 @@ def playSound(filename):
         mixer.music.set_volume(1)
         while mixer.music.get_busy():
             time.sleep(1)
-
+    elif os.path.exists("./photo/sound.mp3"):
+        mixer.init()
+        mixer.music.load("./photo/sound.mp3")
+        mixer.music.play()
+        mixer.music.set_volume(1)
+        while mixer.music.get_busy():
+            time.sleep(1)
 
 
 def updateSound(connection, name_id, delta):
@@ -71,6 +73,8 @@ if __name__ == "__main__":
         num += 1
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
+    DBsize = zd.getDBsize()
+
     while True:
         for key, value in PlayTime.items():
             cMilliseconds = int(time.time() * 1000)
@@ -83,9 +87,15 @@ if __name__ == "__main__":
                     countFaceID = getCountFaceID(connection, key, cMilliseconds - delta)
                     if countFaceID>1:
                         PlayTime[key] = uMilliseconds
-                        filename = "." + zdata[key]['sound']
+                        if not ("sound" in zdata[key]):
+                            filename=""
+                        else:
+                            filename = "." + zdata[key]['sound']
                         print(f"{filename} {int((cMilliseconds - value)/1000)} countFaceID={countFaceID}")
                         playSound(filename)
         time.sleep(0.5)
+        if DBsize != zd.getDBsize():
+            DBsize = zd.getDBsize()
+            zdata = zd.load()
     connection.commit()
     connection.close()
