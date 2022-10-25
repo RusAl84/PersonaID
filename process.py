@@ -178,12 +178,19 @@ if __name__ == '__main__':
     max_face_distance = 0.5
     life_time = 60 * 1000
     t_life_time = 0
+    DBsize = zd.getDBsize()
 
     while True:
         # for i in range(10):
         frame, bboxs, milliseconds = fromPG(connection)
         # frame = cv2.resize(frame, (495, 270))
         if len(frame) > 1:
+
+            if DBsize != zd.getDBsize():
+                DBsize = zd.getDBsize()
+                zd.saveEmb()
+                (known_encodings, known_images, known_names) = zd.loadEmb()
+
             nboxs = recognize(bboxs, frame, known_encodings, max_face_distance, zdata)
             if len(nboxs) > 0:
                 toPG(connection, nboxs, milliseconds)

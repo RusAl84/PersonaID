@@ -10,19 +10,16 @@ global delta
 global PlayTime
 
 
+
 def playSound(filename):
     if os.path.exists(filename):
-        # audio = MP3(filename)
-        # mp3_length = int(audio.info.length * 1000)
-        # cMilliseconds = int(time.time() * 1000)
-        # compare = endPlayTime + mp3_length + delta
-        # endPlayTime = cMilliseconds + mp3_length + delta
         mixer.init()
         mixer.music.load(filename)
         mixer.music.play()
         mixer.music.set_volume(1)
         while mixer.music.get_busy():
             time.sleep(1)
+
 
 
 def updateSound(connection, name_id, delta):

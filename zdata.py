@@ -38,9 +38,9 @@ def saveEmb2():
         known_names.append(item['name'])
         known_images.append(image)
         img = np.asarray(image)
-        face_encoding = DeepFace.represent(img, model_name=models[1],
-                                           enforce_detection=False, detector_backend=backends[5])
-        known_encodings.append(face_encoding / np.linalg.norm(face_encoding))
+        # face_encoding = DeepFace.represent(img, model_name=models[1],
+        #                                    enforce_detection=False, detector_backend=backends[5])
+        # known_encodings.append(face_encoding / np.linalg.norm(face_encoding))
     with open('known_encodings.pickle', 'wb') as handle:
         pickle.dump(known_encodings, handle, protocol=pickle.HIGHEST_PROTOCOL)
     with open('known_images.pickle', 'wb') as handle:
@@ -69,11 +69,57 @@ def saveEmb():
         pickle.dump(known_names, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+def addUser():
+    path = "\\\\desktop-rk6qjih\\Users\\Dell7\\Desktop\\FaceRecog\\photo\\zdata.json"
+
+
+def genData():
+    zdata = load()
+    # num = 0
+    # for item in zdata:
+    #     print(f"{num} {item['filename']} {item['name']} {item['desc']}")
+    #     num += 1
+    # saveEmb()
+    # print("embeddings is generated")
+    lines = []
+    with open("./new/data.txt", 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    dicRecord = dict()
+    dicRecord["filename"] = "\\photo\\" + lines[0].replace("\n", "")
+    dicRecord["name"] = lines[1].replace("\n", "")
+    dicRecord["desc"] = lines[2].replace("\n", "")
+    zdata.append(dicRecord)
+    jsonstring = json.dumps(zdata)
+    jsonstring = jsonstring.replace("\\/", "/").encode().decode('unicode_escape')
+    jsonstring = jsonstring.replace("\\", "\\\\")
+    # print(jsonstring)
+    with open("./new/zdata.json", 'w', encoding='utf-8') as file:
+        file.write(jsonstring.encode().decode("UTF-8"))
+
+def getDBsize():
+    filename = "./photo/zdata.json"
+    if os.path.exists(filename):
+        return os.path.getsize(filename)
+
 if __name__ == '__main__':
     zdata = load()
-    num = 0
-    for item in zdata:
-        print(f"{num} {item['filename']} {item['name']} {item['desc']}")
-        num += 1
-    saveEmb()
-    print("embeddings is generated")
+    # num = 0
+    # for item in zdata:
+    #     print(f"{num} {item['filename']} {item['name']} {item['desc']}")
+    #     num += 1
+    # saveEmb()
+    # print("embeddings is generated")
+    lines = []
+    with open("./new/data.txt", 'r', encoding='utf-8') as file:
+        lines = file.readlines()
+    dicRecord = dict()
+    dicRecord["filename"] = "\\photo\\" + lines[0].replace("\n", "")
+    dicRecord["name"] = lines[1].replace("\n", "")
+    dicRecord["desc"] = lines[2].replace("\n", "")
+    zdata.append(dicRecord)
+    jsonstring = json.dumps(zdata)
+    jsonstring = jsonstring.replace("\\/", "/").encode().decode('unicode_escape')
+    jsonstring = jsonstring.replace("\\", "\\\\")
+    # print(jsonstring)
+    with open("./new/zdata.json", 'w', encoding='utf-8') as file:
+        file.write(jsonstring.encode().decode("UTF-8"))
