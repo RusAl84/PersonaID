@@ -63,7 +63,7 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=80):
                             name = zdata[gitem[3]]['name']
             gbboxs = newgbboxs
             fontScale = 2
-            color=(0, 255, 0)
+            color = (0, 255, 0)
             cv2.putText(img, name,
                         (dots[0], dots[1] - 20), cv2.FONT_HERSHEY_COMPLEX,
                         fontScale, color, 3)
@@ -132,31 +132,21 @@ if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     connection.autocommit = True
-    # cursor = connection.cursor()
-    # sql_delete_query = "Delete from public.z1frame"
-    # cursor.execute(sql_delete_query)
-    # connection.commit()
-    # sql_delete_query = "Delete from public.zdata"
-    # cursor.execute(sql_delete_query)
-    # connection.commit()
-    # captpath = ".\\capture\\"
-    # stream_params = {"-input_framerate": 10, "-livestream": True}
-    # filelist = [f for f in os.listdir(captpath)]
-    # for f in filelist:
-    #     os.remove(os.path.join(captpath, f))
     zdata = zd.load()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
     HIGH_VALUE = 10000
     WIDTH = HIGH_VALUE
     HEIGHT = HIGH_VALUE
-    cap = cv2.VideoCapture(1)
+
+    cap = cv2.VideoCapture(2)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     print(width, height)
+
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.1.65:554/ISAPI/Streaming/Channels/101")
     # cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     # cap = cv2.VideoCapture("rtsp://admin:FreePAS12@192.168.88.23:554/ISAPI/Streaming/Channels/1")
@@ -168,13 +158,9 @@ if __name__ == '__main__':
         exit()
 
     with pyvirtualcam.Camera(width=990, height=540, fps=30, fmt=PixelFormat.BGR) as cam:
-        # with pyvirtualcam.Camera(width=990, height=540, fps=10, fmt=PixelFormat.BGR) as cam:
-        # print(f'Using virtual camera: {cam.device}')
-        # frame = np.zeros((cam.height, cam.width, 3), np.uint8)  # RGB
         sframe = []
         count = 0
         pTime = 0
-        # max_fps = cap.get(cv2.CAP_PROP_FPS)
         detection_score = 0.4  # порог чувствительности для поиска лица от 0 до 1
         minDetectionCon = 0.6
         mpFaceDetection = mp.solutions.face_detection
@@ -188,8 +174,6 @@ if __name__ == '__main__':
             if DBsize != zd.getDBsize():
                 DBsize = zd.getDBsize()
                 zdata = zd.load()
-
-
 
             count += 1
             cTime = time.time()

@@ -205,7 +205,6 @@ if __name__ == '__main__':
                     # if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) \
                     #         or is_fdash \
                     #         or (c_face_id > 0 and c_face_id != face_id):
-
                     # face_id_exist = fasceID_exist(face_id, connection)
                     face_id_exist = False
                     if not face_id_exist:
@@ -213,7 +212,7 @@ if __name__ == '__main__':
                         img = simplejpeg.encode_jpeg(image=frame, quality=90)
                         im = Image.open(io.BytesIO(img))
                         width, height = im.size
-                        padding = 20
+                        padding = 80
                         x1 = bboxs[0] - padding
                         y1 = bboxs[1] - padding
                         x2 = bboxs[0] + bboxs[2] + padding

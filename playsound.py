@@ -15,9 +15,9 @@ def playSound(filename):
         mixer.music.set_volume(1)
         while mixer.music.get_busy():
             time.sleep(1)
-    elif os.path.exists("./photo/sound.mp3"):
+    elif os.path.exists("./photo/all.mp3"):
         mixer.init()
-        mixer.music.load("./photo/sound.mp3")
+        mixer.music.load("./photo/all.mp3")
         mixer.music.play()
         mixer.music.set_volume(1)
         while mixer.music.get_busy():
