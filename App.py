@@ -25,16 +25,13 @@ def update_items():
     global IDs
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
-
     cursor = connection.cursor()
     postgreSQL_select_Query = "SELECT * FROM public.zdash ORDER BY milliseconds DESC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
-
     if DBsize != zd.getDBsize():
         DBsize = zd.getDBsize()
-        gdata = zd.getDBsize()
-
+        gdata = zd.load()
     if datarecord:
         id = datarecord[0]
         milliseconds = datarecord[1]
@@ -81,7 +78,6 @@ def getid():
     return str(len(Items) - 1)
 
 
-# получение сообщений
 @app.route("/dash/<int:id>")
 def GetMessage(id):
     print(id)
