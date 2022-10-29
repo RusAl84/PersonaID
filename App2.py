@@ -64,8 +64,8 @@ def FaceIDisExist(name_id, milliseconds):
         # print(cmp)
         if item['name_id'] == name_id and cmp < milliseconds:
             lastCmp = cmp
-        if lastCmp < milliseconds:
-            isExist = True
+    if lastCmp < milliseconds:
+        isExist = True
     return isExist
 
 

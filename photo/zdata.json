@@ -97,5 +97,101 @@
     "filename": "\\photo\\FisenkoGV.jpg",
     "name": "Фисенко Геннадий Валентинович",
     "desc": "Проректор РТУ МИРЭА"
+  },
+  {
+    "filename": "\\photo\\ArtemovaSV.jpg",
+    "name": "Артемова Светлана Валерьевна",
+	"sound": "\\photo\\ArtemovaSV.mp3",
+    "desc": "И.о. заведующего кафедрой КБ-9"
+  },
+  {
+    "filename": "\\photo\\VasilievAG.jpg",
+    "name": "Васильев Андрей Георгиевич",
+	"sound": "\\photo\\VasilievAG.mp3",
+    "desc": "Директор института радиоэлектроники и информатики"
+  },
+  {
+    "filename": "\\photo\\GlobenkoOA.jpg",
+    "name": "Глобенко Оксана Александровна",
+	"sound": "\\photo\\GlobenkoOA.mp3",
+    "desc": "Заместитель директора по научной работе"
+  },
+  {
+    "filename": "\\photo\\GrigorievVR.jpg",
+    "name": "Григорьев Виталий Робертович",
+	"sound": "\\photo\\GrigorievVR.mp3",
+    "desc": "Заведующий кафедрой КБ-8"
+  },
+  {
+    "filename": "\\photo\\ZuevAS.jpg",
+    "name": "Зуев Андрей Сергеевич",
+	"sound": "\\photo\\ZuevAS.mp3",
+    "desc": "Директор института информационных технологий"
+  },
+  {
+    "filename": "\\photo\\IvanovaIA.jpg",
+    "name": "Иванова Ирина Алексеевна",
+	"sound": "\\photo\\IvanovaIA.mp3",
+    "desc": "Заведующий кафедрой КБ-14"
+  },
+  {
+    "filename": "\\photo\\KulaginVP.jpg",
+    "name": "Кулагин Владимир Петрович",
+	"sound": "\\photo\\KulaginVP.mp3",
+    "desc": "Заведующий кафедрой КБ-5"
+  },
+  {
+    "filename": "\\photo\\MagomedovSG.jpg",
+    "name": "Магомедов Шамиль Гасангусейнович",
+	"sound": "\\photo\\MagomedovSG.mp3",
+    "desc": "Заведующий кафедрой КБ-4"
+  },
+  {
+    "filename": "\\photo\\MaslovMA.jpg",
+    "name": "Маслов Михаил Александрович",
+	"sound": "\\photo\\MaslovMA.mp3",
+    "desc": "Директор института тонких химических технологий им. М.В. Ломоносова"
+  },
+  {
+    "filename": "\\photo\\MylnikovaAN.jpg",
+    "name": "Мыльникова Анастасия Николаевна",
+	"sound": "\\photo\\MylnikovaAN.mp3",
+    "desc": "И.о. директора Института технологий управления"
+  },
+  {
+    "filename": "\\photo\\NikonovVV.jpg",
+    "name": "Никонов Вячеслав Викторович",
+	"sound": "\\photo\\NikonovVV.mp3",
+    "desc": "Заместитель директора по методической работе"
+  },
+  {
+    "filename": "\\photo\\PushkinPY.jpg",
+    "name": "Пушкин Павел Юрьевич",
+	"sound": "\\photo\\PushkinPY.mp3",
+    "desc": "Заведующий кафедрой КБ-1"
+  },
+  {
+    "filename": "\\photo\\RomanovMP.jpg",
+    "name": "Романов Михаил Петрович",
+	"sound": "\\photo\\RomanovMP.mp3",
+    "desc": "Директор института искусственного интеллекта"
+  },
+  {
+    "filename": "\\photo\\SamoginAS.jpg",
+    "name": "Самогин Артём Сергеевич",
+	"sound": "\\photo\\SamoginAS.mp3",
+    "desc": "Специалист по работе с абитуриентами"
+  },
+  {
+    "filename": "\\photo\\SnedkovAB.jpg",
+    "name": "Снедков Александр Борисович",
+	"sound": "\\photo\\SnedkovAB.mp3",
+    "desc": "Заведующий кафедрой КБ-6"
+  },
+  {
+    "filename": "\\photo\\ShaminRV.jpg",
+    "name": "Шамин Роман Вячеславович",
+	"sound": "\\photo\\ShaminRV.mp3",
+    "desc": "Директор института перспективных технологий и индустриального программирования"
   }
 ]

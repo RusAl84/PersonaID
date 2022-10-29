@@ -53,11 +53,25 @@ def update_items():
             dic['capture'] = capture
             dic['name_id'] = name_id
             dic['desc'] = gdata[int(name_id)]["desc"]
-            Items.append(dic)
-            IDs.add(id)
-
+            if not FaceIDisExist(name_id, 10 * 1000):
+                print("add")
+                Items.append(dic)
+                IDs.add(id)
     return
     # print("updated" + time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
+
+def FaceIDisExist(name_id, milliseconds):
+    isExist = False
+    cMilliseconds = int(time.time() * 1000)
+    lastCmp=milliseconds*10
+    for item in Items:
+        cmp = (cMilliseconds - item['milliseconds'])
+        # print(cmp)
+        if item['name_id'] == name_id and cmp < milliseconds:
+            lastCmp = cmp
+    if lastCmp < milliseconds:
+        isExist = True
+    return isExist
 
 
 scheduler = BackgroundScheduler()
