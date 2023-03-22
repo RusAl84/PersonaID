@@ -8,7 +8,6 @@ from flask import send_from_directory
 import zdata as zd
 from apscheduler.schedulers.background import BackgroundScheduler
 
-
 global Items
 global gdata
 global DBsize
@@ -29,6 +28,7 @@ def update_items():
     postgreSQL_select_Query = "SELECT * FROM public.zdash ORDER BY milliseconds DESC LIMIT 1"
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
+
     if DBsize != zd.getDBsize():
         DBsize = zd.getDBsize()
         gdata = zd.load()
@@ -60,10 +60,11 @@ def update_items():
     return
     # print("updated" + time.strftime("%A, %d. %B %Y %I:%M:%S %p"))
 
+
 def FaceIDisExist(name_id, milliseconds):
     isExist = False
     cMilliseconds = int(time.time() * 1000)
-    lastCmp=milliseconds*10
+    lastCmp = milliseconds * 10
     for item in Items:
         cmp = (cMilliseconds - item['milliseconds'])
         # print(cmp)
