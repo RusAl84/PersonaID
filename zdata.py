@@ -5,7 +5,7 @@ from PIL import Image
 import numpy as np
 import pickle
 import face_recognition
-
+import psycopg2
 
 def load(filename="./photo/zdata.json"):
     with open(filename, 'r', encoding='utf-8') as file:
@@ -173,10 +173,23 @@ def isChange():
         return os.path.getsize(filename)
 
 def loadEmb():
+    connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
+                                  database="personadb")
+    connection.autocommit = True
 
-
-
-
+    photopath = ".\\photo\\"
+    stream_params = {"-input_framerate": 10, "-livestream": True}
+    filelist = [f for f in os.listdir(photopath)]
+    for f in filelist:
+        os.remove(os.path.join(photopath, f))
+    newpath = ".\\new\\"
+    filelist = [f for f in os.listdir(newpath)]
+    for f in filelist:
+        # print(os.path.join(photopath, f))
+        filename=f"{os.path.join(newpath, f)}\\data.txt"
+        with open(filename, 'r', encoding='utf-8') as file:
+            contents = file.readlines()
+            print(contents[0])
 if __name__ == '__main__':
     num = loadEmb()
     print(f"embeddings is generated, count: {num}")
