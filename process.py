@@ -103,9 +103,6 @@ def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
         item.append(face_names[i])
         if face_names[i] != -1:
             nbboxs.append(item)
-    # for i in range(len(face_names)):
-    #     if face_names[i] != "Unknown":
-    #         faces_info[face_names[i]] = (bboxs[i], time.time())
 
     return nbboxs
 
@@ -171,9 +168,9 @@ if __name__ == '__main__':
     zdata = zd.load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
-    known_images = []
+    # known_images = []
     known_encodings = []
-    (known_encodings, known_images, known_names) = zd.loadEmb()
+    known_encodings = zd.loadEmb()
     print("Embeddings is load")
     max_face_distance = 0.5
     life_time = 60 * 1000
@@ -197,55 +194,40 @@ if __name__ == '__main__':
                 # cv2.imwrite("2.jpg", frame)
                 for bitem in nboxs:
                     face_id = bitem[3]
-                    # c_life_time = int(time.time() * 1000)
-                    # t_life_time = get_lifetime(connection, face_id)
-                    # is_fdash = is_first_dash(connection)
-                    # c_face_id = get_dash_last_faceid(connection)
-                    # print(f"{c_life_time} {t_life_time} {abs(t_life_time - c_life_time)}   ")
-                    # if (abs(t_life_time - c_life_time) > life_time and t_life_time > 0) \
-                    #         or is_fdash \
-                    #         or (c_face_id > 0 and c_face_id != face_id):
-                    # face_id_exist = fasceID_exist(face_id, connection)
-                    face_id_exist = False
-                    if not face_id_exist:
-                        bboxs = bitem[1]
-                        img = simplejpeg.encode_jpeg(image=frame, quality=90)
-                        im = Image.open(io.BytesIO(img))
-                        width, height = im.size
-                        padding = 80
-                        x1 = bboxs[0] - padding
-                        y1 = bboxs[1] - padding
-                        x2 = bboxs[0] + bboxs[2] + padding
-                        y2 = bboxs[1] + bboxs[3] + padding
-                        if x1 < 0:
-                            x1 = 0
-                        if y1 < 0:
-                            y1 = 0
-                        if x2 > width:
-                            x2 = width
-                        if y2 > height:
-                            y2 = height
-                        pixels = (x1, y1, x2, y2)
-                        fname_str = ".\\capture\\" + str(milliseconds) + "_" + str(random.randint(0, 10 ** 10)) + ".jpg"
-                        im_crop = im.crop(pixels)
-                        im_crop.save(fname_str, quality=90)
-                        print(bitem, zdata[face_id]['name'], face_id, milliseconds)
-                        capture = fname_str.replace('.', '')
-                        capture = capture.replace('\\', '/')
-                        capture = capture.replace('jpg', '.jpg')
-                        name = str(zdata[face_id]['name'])
-                        name_id = str(face_id)
-                        dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
-                        timestr = str(dt)
-                        photo = str(zdata[face_id]['filename'])
-                        photo = photo.replace('\\', '/')
-                        url = "http://127.0.0.1:5000"
-                        toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
-                        # else:
-                        sound = str(zdata[face_id]['filename'])
-                        sound = sound.replace("jpg", "mp3")
-                        sound = "." + sound.replace('\\', '/')
-                        # endPlayTime = playSound(sound, endPlayTime)
+                    bboxs = bitem[1]
+                    img = simplejpeg.encode_jpeg(image=frame, quality=90)
+                    im = Image.open(io.BytesIO(img))
+                    width, height = im.size
+                    padding = 80
+                    x1 = bboxs[0] - padding
+                    y1 = bboxs[1] - padding
+                    x2 = bboxs[0] + bboxs[2] + padding
+                    y2 = bboxs[1] + bboxs[3] + padding
+                    if x1 < 0:
+                        x1 = 0
+                    if y1 < 0:
+                        y1 = 0
+                    if x2 > width:
+                        x2 = width
+                    if y2 > height:
+                        y2 = height
+                    pixels = (x1, y1, x2, y2)
+                    fname_str = ".\\capture\\" + str(milliseconds) + "_" + str(random.randint(0, 10 ** 10)) + ".jpg"
+                    im_crop = im.crop(pixels)
+                    im_crop.save(fname_str, quality=90)
+                    print(bitem, zdata[face_id]['name'], face_id, milliseconds)
+                    capture = fname_str.replace('.', '')
+                    capture = capture.replace('\\', '/')
+                    capture = capture.replace('jpg', '.jpg')
+                    name = str(zdata[face_id]['name'])
+                    name_id = str(face_id)
+                    dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
+                    timestr = str(dt)
+                    photo = str(zdata[face_id]['filename'])
+                    photo = photo.replace('\\', '/')
+                    url = "http://127.0.0.1:5000"
+                    toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
+
             time.sleep(0.01)
     connection.commit()
     connection.close()

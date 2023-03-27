@@ -18,11 +18,11 @@ def load(filename="./photo/zdata.json"):
 def loadEmb():
     with open('known_encodings.pickle', 'rb') as handle:
         known_encodings = pickle.load(handle)
-    with open('known_images.pickle', 'rb') as handle:
-        known_images = pickle.load(handle)
-    with open('known_names.pickle', 'rb') as handle:
-        known_names = pickle.load(handle)
-    return (known_encodings, known_images, known_names)
+    # with open('known_images.pickle', 'rb') as handle:
+    #     known_images = pickle.load(handle)
+    # with open('known_names.pickle', 'rb') as handle:
+    #     known_names = pickle.load(handle)
+    return known_encodings
 
 
 def saveEmb2():
@@ -53,19 +53,19 @@ def saveEmb():
     zdata = load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
-    known_images = []
+    # known_images = []
     known_encodings = []
-    known_names = []
-    emb_crc = {}
-    if os.path.exists("emb_crc.pickle"):
-        with open('emb_crc.pickle', 'rb') as handle:
-            emb_crc = pickle.load(handle)
+    # known_names = []
+    # emb_crc = {}
+    # if os.path.exists("emb_crc.pickle"):
+    #     with open('emb_crc.pickle', 'rb') as handle:
+    #         emb_crc = pickle.load(handle)
     for item in zdata:
-        known_names.append(item['name'])
+        # known_names.append(item['name'])
         datafile = path + item['filename']
         print(datafile)
         image = face_recognition.load_image_file(datafile)
-        known_images.append(image)
+        # known_images.append(image)
         if os.path.exists(datafile + ".pickle"):
             if datafile in emb_crc:
                 if os.path.getsize(datafile) != emb_crc[datafile]:
@@ -89,16 +89,49 @@ def saveEmb():
             known_encodings.append(face_encoding)
             with open(datafile + '.pickle', 'wb') as handle:
                 pickle.dump(face_encoding, handle, protocol=pickle.HIGHEST_PROTOCOL)
-            emb_crc[datafile] = os.path.getsize(datafile)
+            # emb_crc[datafile] = os.path.getsize(datafile)
     with open('known_encodings.pickle', 'wb') as handle:
         pickle.dump(known_encodings, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('known_images.pickle', 'wb') as handle:
-        pickle.dump(known_images, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('known_names.pickle', 'wb') as handle:
-        pickle.dump(known_names, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('emb_crc.pickle', 'wb') as handle:
-        pickle.dump(emb_crc, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open('known_images.pickle', 'wb') as handle:
+    #     pickle.dump(known_images, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open('known_names.pickle', 'wb') as handle:
+    #     pickle.dump(known_names, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    # with open('emb_crc.pickle', 'wb') as handle:
+    #     pickle.dump(emb_crc, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+
+def saveEmb2():
+    zdata = load()
+    full_path = os.path.realpath(__file__)
+    path, filename = os.path.split(full_path)
+
+    known_encodings = []
+    for item in zdata:
+        # known_names.append(item['name'])
+        datafile = path + item['filename']
+        print(datafile)
+        image = face_recognition.load_image_file(datafile)
+        face_encoding = face_recognition.face_encodings(image)[0]
+        known_encodings.append(face_encoding)
+    with open('known_encodings.pickle', 'wb') as handle:
+        pickle.dump(known_encodings, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def saveEmb3():
+    zdata = load()
+    full_path = os.path.realpath(__file__)
+    path, filename = os.path.split(full_path)
+
+    known_encodings = []
+    for item in zdata:
+        # known_names.append(item['name'])
+        datafile = path + item['filename']
+        print(datafile)
+        image = face_recognition.load_image_file(datafile)
+        face_encoding = face_recognition.face_encodings(image)[0]
+        # insertDB
+    #     known_encodings.append(face_encoding)
+    # with open('known_encodings.pickle', 'wb') as handle:
+    #     pickle.dump(known_encodings, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 # def addUser():
 #     path = "\\\\desktop-rk6qjih\\Users\\Dell7\\Desktop\\FaceRecog\\photo\\zdata.json"
@@ -139,12 +172,11 @@ def isChange():
     if os.path.exists(filename):
         return os.path.getsize(filename)
 
+def loadEmb():
+
+
+
 
 if __name__ == '__main__':
-    zdata = load()
-    # num = 0
-    # for item in zdata:
-    #     print(f"{num} {item['filename']} {item['name']} {item['desc']}")
-    #     num += 1
-    saveEmb()
-    # print("embeddings is generated")
+    num = loadEmb()
+    print(f"embeddings is generated, count: {num}")
