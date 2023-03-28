@@ -32,7 +32,7 @@ def findFaces(img, faceDetection):
     return img, bboxs
 
 
-def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=80):
+def DrawRectagle(img, bbox, gbboxs, detection_score, emb, l=30, t=5, rt=3, dpix=80):
     for box in bbox:
         num = box[0]
         dots = box[1]
@@ -60,7 +60,7 @@ def DrawRectagle(img, bbox, gbboxs, detection_score, l=30, t=5, rt=3, dpix=80):
                     if dist(dots, cbox) < d:
                         d = dist(dots, cbox)
                         if d < dpix:
-                            name = zdata[gitem[3]]['name']
+                            name = emb[gitem[3]]['name']
             gbboxs = newgbboxs
             fontScale = 2
             color = (0, 255, 0)
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     connection.autocommit = True
-    zdata = zd.load()
+    emb = zd.getEmb()
     lifeTime = 1000 * 5
     number_of_processing_frame = 7
     HIGH_VALUE = 10000
@@ -170,11 +170,11 @@ if __name__ == '__main__':
                                                       model_selection=1)
         gbboxs = []
         gdash = []
-        DBsize = zd.getDBsize()
         while True:
-            if DBsize != zd.getDBsize():
-                DBsize = zd.getDBsize()
-                zdata = zd.load()
+
+            if zd.checkNew():
+                zd.addEmb()
+                emb = zd.getEmb()
 
             count += 1
             cTime = time.time()
@@ -202,7 +202,7 @@ if __name__ == '__main__':
                         item.append(milliseconds)
                         gbboxs.append(item)
                     # cv2.imwrite(".\\capture\\" + str(milliseconds) + str(random.randint(0, 10 ** 10)) + ".jpg", frame)
-                frame, gbboxs = DrawRectagle(img, bboxs, gbboxs, detection_score)
+                frame, gbboxs = DrawRectagle(img, bboxs, gbboxs, detection_score, emb)
                 # print(tuple(frame.shape[1::-1]))
                 sframe = cv2.resize(frame, (990, 540))
                 cam.send(sframe)

@@ -3,9 +3,10 @@ import psycopg2
 from pygame import mixer
 import zdata as zd
 import os.path
+
 global delta
 global PlayTime
-
+photopath = ".\\photo\\"
 
 def playSound(filename):
     if os.path.exists(filename):
@@ -15,9 +16,9 @@ def playSound(filename):
         mixer.music.set_volume(1)
         while mixer.music.get_busy():
             time.sleep(1)
-    elif os.path.exists("./photo/all.mp3"):
+    elif os.path.exists("./all.mp3"):
         mixer.init()
-        mixer.music.load("./photo/all.mp3")
+        mixer.music.load("./all.mp3")
         mixer.music.play()
         mixer.music.set_volume(1)
         while mixer.music.get_busy():
@@ -65,15 +66,14 @@ if __name__ == "__main__":
     global delta
     # задержка звука
     delta = 1000 * 30
-    zdata = zd.load()
+    emb = zd.getEmb()
     num = 0
     cMilliseconds = int(time.time() * 1000)
-    for item in zdata:
+    for item in emb:
         PlayTime[num] = cMilliseconds
         num += 1
-    full_path = os.path.realpath(__file__)
-    path, filename = os.path.split(full_path)
-    DBsize = zd.getDBsize()
+    # full_path = os.path.realpath(__file__)
+    # path, filename = os.path.split(full_path)
 
     while True:
         for key, value in PlayTime.items():
@@ -85,17 +85,21 @@ if __name__ == "__main__":
                 # PlayTime[num]
                 if (cMilliseconds - value) > delta:
                     countFaceID = getCountFaceID(connection, key, cMilliseconds - delta)
-                    if countFaceID>1:
+                    if countFaceID > 1:
                         PlayTime[key] = uMilliseconds
-                        if not ("sound" in zdata[key]):
-                            filename=""
+                        if not ("sound" in emb[key]):
+                            filename = ""
                         else:
-                            filename = "." + zdata[key]['sound']
-                        print(f"{filename} {int((cMilliseconds - value)/1000)} countFaceID={countFaceID}")
+                            str1=emb[key]['sound']
+                            if len(str1) > 0:
+                                filename = photopath + emb[key]['sound']
+                            else:
+                                filename = ""
+                        print(f"{emb[key]['name']} {filename} {int((cMilliseconds - value) / 1000)} countFaceID={countFaceID}")
                         playSound(filename)
         time.sleep(0.5)
-        if DBsize != zd.getDBsize():
-            DBsize = zd.getDBsize()
-            zdata = zd.load()
+        if zd.checkNew():
+            zd.addEmb()
+            emb = zd.getEmb()
     connection.commit()
     connection.close()

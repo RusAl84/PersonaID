@@ -71,7 +71,6 @@ def fromPG(connection):
         bboxs = ast.literal_eval(bboxs)
         # bboxs= json.loads(bboxs)
         # print(bboxs[0])
-
         # dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
         # now = datetime.datetime.now()
         # print(str(dt.time()) + " " + str(now))
@@ -81,12 +80,14 @@ def fromPG(connection):
     return img, bboxs, milliseconds
 
 
-def recognize(bboxs, frame, known_encodings, max_face_distance, zdata):
+def recognize(bboxs, frame, emb, max_face_distance):
     face_locations = [(bbox[1][1], bbox[1][0] + bbox[1][2], bbox[1][1] + bbox[1][3], bbox[1][0]) for bbox in bboxs]
     rgb_frame = frame[:, :, ::-1]
     face_names = []
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
-
+    known_encodings = []
+    for item in emb:
+        known_encodings.append(item['emb'])
     for face_encoding in face_encodings:
         matches = face_recognition.compare_faces(known_encodings, face_encoding)
         name = -1
@@ -165,17 +166,13 @@ if __name__ == '__main__':
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
     connection.autocommit = True
-    zdata = zd.load()
     full_path = os.path.realpath(__file__)
     path, filename = os.path.split(full_path)
-    # known_images = []
-    known_encodings = []
-    known_encodings = zd.loadEmb()
-    print("Embeddings is load")
+    emb = []
+    emb = zd.getEmb()
     max_face_distance = 0.5
     life_time = 60 * 1000
     t_life_time = 0
-    DBsize = zd.getDBsize()
 
     while True:
         # for i in range(10):
@@ -183,12 +180,11 @@ if __name__ == '__main__':
         # frame = cv2.resize(frame, (495, 270))
         if len(frame) > 1:
 
-            if DBsize != zd.getDBsize():
-                DBsize = zd.getDBsize()
-                zd.saveEmb()
-                (known_encodings, known_images, known_names) = zd.loadEmb()
+            if zd.checkNew():
+                zd.addEmb()
+                emb = zd.getEmb()
 
-            nboxs = recognize(bboxs, frame, known_encodings, max_face_distance, zdata)
+            nboxs = recognize(bboxs, frame, emb, max_face_distance)
             if len(nboxs) > 0:
                 toPG(connection, nboxs, milliseconds)
                 # cv2.imwrite("2.jpg", frame)
@@ -215,15 +211,15 @@ if __name__ == '__main__':
                     fname_str = ".\\capture\\" + str(milliseconds) + "_" + str(random.randint(0, 10 ** 10)) + ".jpg"
                     im_crop = im.crop(pixels)
                     im_crop.save(fname_str, quality=90)
-                    print(bitem, zdata[face_id]['name'], face_id, milliseconds)
+                    print(bitem, emb[face_id]['name'], face_id, milliseconds)
                     capture = fname_str.replace('.', '')
                     capture = capture.replace('\\', '/')
                     capture = capture.replace('jpg', '.jpg')
-                    name = str(zdata[face_id]['name'])
+                    name = str(emb[face_id]['name'])
                     name_id = str(face_id)
                     dt = datetime.datetime.fromtimestamp(int(milliseconds) / 1000.0)
                     timestr = str(dt)
-                    photo = str(zdata[face_id]['filename'])
+                    photo = str(emb[face_id]['filename'])
                     photo = photo.replace('\\', '/')
                     url = "http://127.0.0.1:5000"
                     toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)

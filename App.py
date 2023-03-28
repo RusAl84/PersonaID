@@ -9,8 +9,7 @@ import zdata as zd
 from apscheduler.schedulers.background import BackgroundScheduler
 
 global Items
-global gdata
-global DBsize
+global emb
 global IDs
 
 app = Flask(__name__)
@@ -19,8 +18,7 @@ CORS(app)
 
 def update_items():
     global Items
-    global gdata
-    global DBsize
+    global emb
     global IDs
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
@@ -29,9 +27,10 @@ def update_items():
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
 
-    if DBsize != zd.getDBsize():
-        DBsize = zd.getDBsize()
-        gdata = zd.load()
+    if zd.checkNew():
+        zd.addEmb()
+        emb = zd.getEmb()
+
     if datarecord:
         id = datarecord[0]
         milliseconds = datarecord[1]
@@ -52,9 +51,9 @@ def update_items():
             dic['name'] = name
             dic['capture'] = capture
             dic['name_id'] = name_id
-            dic['desc'] = gdata[int(name_id)]["desc"]
+            dic['desc'] = emb[int(name_id)]["desc"]
             if not FaceIDisExist(name_id, 10 * 1000):
-                print("add")
+                print(f"add {name}")
                 Items.append(dic)
                 IDs.add(id)
     return
@@ -116,11 +115,10 @@ def send_capture(path):
 
 if __name__ == '__main__':
     global Items
-    global gdata
+    global emb
     global DBsize
     global IDs
-    gdata = zd.load()
-    DBsize = zd.getDBsize()
+    emb = zd.getEmb()
     Items = []
     IDs = set()
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",

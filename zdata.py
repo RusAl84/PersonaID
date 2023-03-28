@@ -21,6 +21,7 @@ class NumpyArrayEncoder(JSONEncoder):
 
 connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                               database="personadb")
+connection.autocommit = True
 
 photopath = ".\\photo\\"
 newpath = ".\\new\\"
@@ -54,7 +55,6 @@ def isExist(filename):
 
 
 def addEmb():
-    connection.autocommit = True
     filelist = [f for f in os.listdir(newpath)]
     num=0
     for f in filelist:
@@ -116,16 +116,22 @@ def getEmb():
     return lines
 
 def checkNew():
-    if len(os.listdir('/your/path')) == 0:
+    if len(os.listdir(newpath)) == 0:
         return False
     else:
         return True
 
+def getDataById(emb, id):
+    for item in emb:
+        if item['id']==id:
+            return item
+
 if __name__ == '__main__':
     # DB_Clear()
     # addEmb()
-    emb = getEmb()
-    print(emb[0])
+    # emb = getEmb()
+    # print(emb[0])
+    print(checkNew())
 
 
 
