@@ -87,19 +87,15 @@ if __name__ == "__main__":
                     countFaceID = getCountFaceID(connection, key, cMilliseconds - delta)
                     if countFaceID > 1:
                         PlayTime[key] = uMilliseconds
-                        if not ("sound" in emb[key]):
-                            filename = ""
-                        else:
+                        filename = ""
+                        if ("sound" in emb[key]):
                             str1=emb[key]['sound']
                             if len(str1) > 0:
                                 filename = photopath + emb[key]['sound']
-                            else:
-                                filename = ""
                         print(f"{emb[key]['name']} {filename} {int((cMilliseconds - value) / 1000)} countFaceID={countFaceID}")
                         playSound(filename)
         time.sleep(0.5)
-        if zd.checkNew():
-            zd.addEmb()
+        if zd.isChanged(len(emb)):
             emb = zd.getEmb()
     connection.commit()
     connection.close()
