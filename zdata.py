@@ -121,14 +121,24 @@ def checkNew():
     else:
         return True
 
+def isChanged(count):
+    cursor = connection.cursor()
+    postgreSQL_select_Query = """SELECT id FROM public.zemb ORDER BY id ASC"""
+    cursor.execute(postgreSQL_select_Query)
+    datarecord = cursor.fetchall()
+    if len(datarecord)==count:
+        return False
+    else:
+        return True
+
 def getDataById(emb, id):
     for item in emb:
         if item['id']==id:
             return item
 
 if __name__ == '__main__':
-    # DB_Clear()
-    # addEmb()
+    DB_Clear()
+    addEmb()
     # emb = getEmb()
     # print(emb[0])
     print(checkNew())

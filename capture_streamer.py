@@ -172,9 +172,10 @@ if __name__ == '__main__':
         gdash = []
         while True:
 
-            if zd.checkNew():
-                zd.addEmb()
-                emb = zd.getEmb()
+            if count % 75 == 0:  #каждый 75 кадр провперка есть ли новое лицо в для загрузки в emb
+                if zd.checkNew():
+                    zd.addEmb()
+                    emb = zd.getEmb()
 
             count += 1
             cTime = time.time()

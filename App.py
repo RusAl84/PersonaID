@@ -27,8 +27,7 @@ def update_items():
     cursor.execute(postgreSQL_select_Query)
     datarecord = cursor.fetchone()
 
-    if zd.checkNew():
-        zd.addEmb()
+    if zd.isChanged(len(emb)):
         emb = zd.getEmb()
 
     if datarecord:

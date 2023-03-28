@@ -180,8 +180,7 @@ if __name__ == '__main__':
         # frame = cv2.resize(frame, (495, 270))
         if len(frame) > 1:
 
-            if zd.checkNew():
-                zd.addEmb()
+            if zd.isChanged(len(emb)):
                 emb = zd.getEmb()
 
             nboxs = recognize(bboxs, frame, emb, max_face_distance)
