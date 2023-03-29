@@ -6,7 +6,9 @@ import os.path
 
 global delta
 global PlayTime
+global emb
 photopath = ".\\photo\\"
+
 
 def playSound(filename):
     if os.path.exists(filename):
@@ -57,23 +59,28 @@ def getCountFaceID(connection, name_id, cmilliseconds):
         return 0
 
 
-if __name__ == "__main__":
-    connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
-                                  database="personadb")
-    connection.autocommit = True
+def update():
     global PlayTime
+    global emb
     PlayTime = {}
-    global delta
-    # задержка звука
-    delta = 1000 * 30
     emb = zd.getEmb()
     num = 0
     cMilliseconds = int(time.time() * 1000)
     for item in emb:
         PlayTime[num] = cMilliseconds
         num += 1
-    # full_path = os.path.realpath(__file__)
-    # path, filename = os.path.split(full_path)
+
+
+if __name__ == "__main__":
+    connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
+                                  database="personadb")
+    connection.autocommit = True
+    global PlayTime
+    global delta
+    global emb
+    # задержка звука
+    delta = 1000 * 30
+    update()
 
     while True:
         for key, value in PlayTime.items():
@@ -89,13 +96,15 @@ if __name__ == "__main__":
                         PlayTime[key] = uMilliseconds
                         filename = ""
                         if ("sound" in emb[key]):
-                            str1=emb[key]['sound']
+                            str1 = emb[key]['sound']
                             if len(str1) > 0:
                                 filename = photopath + emb[key]['sound']
-                        print(f"{emb[key]['name']} {filename} {int((cMilliseconds - value) / 1000)} countFaceID={countFaceID}")
+                        print(
+                            f"{emb[key]['name']} {filename} {int((cMilliseconds - value) / 1000)} countFaceID={countFaceID}")
                         playSound(filename)
         time.sleep(0.5)
         if zd.isChanged(len(emb)):
-            emb = zd.getEmb()
+            print("EMB updated")
+            update()
     connection.commit()
     connection.close()
