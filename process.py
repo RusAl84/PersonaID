@@ -84,6 +84,8 @@ def recognize(bboxs, frame, emb, max_face_distance):
     face_locations = [(bbox[1][1], bbox[1][0] + bbox[1][2], bbox[1][1] + bbox[1][3], bbox[1][0]) for bbox in bboxs]
     rgb_frame = frame[:, :, ::-1]
     face_names = []
+
+    rgb_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_BGR2RGB)
     face_encodings = face_recognition.face_encodings(rgb_frame, face_locations)
     known_encodings = []
     for item in emb:

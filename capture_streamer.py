@@ -139,8 +139,9 @@ if __name__ == '__main__':
     WIDTH = HIGH_VALUE
     HEIGHT = HIGH_VALUE
 
+    cap = cv2.VideoCapture(0)
     # cap = cv2.VideoCapture(2)
-    cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
+    # cap = cv2.VideoCapture("d:\\test1_5mp.mp4")
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
