@@ -14,3 +14,9 @@
 Система распознавания лиц разработана на языке программирования Python и основывается на библиотеках OpenCV, Dlib, Deepfac и tensorboard. На сегодняшний момент для распознавания лиц также используются: VGG-Face, Google FaceNet, OpenFace, Facebook DeepFace, DeepID, ArcFace и Dlib. При демонстрации работы программного средства будут поясняться принципы работы и отличия от всех существующих аналогов.
 Будет демонстрироваться возможность поиска и распознавания лиц в видео потоке, в ответ на распознанное лицо будет звучать соответствующее звуковое сопровождение.
 https://github.com/RusAl84/FaceRecog
+
+#Installation
+##Linux
+python3 -m pip install -r requirements.txt
+##Windows
+python -m pip install -r requirements.txt
