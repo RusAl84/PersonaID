@@ -223,7 +223,7 @@ if __name__ == '__main__':
                     photo = str(emb[face_id]['filename'])
                     photo = photo.replace('\\', '/')
                     url = "http://127.0.0.1:5000"
-                    toPGzdash(connection, str(milliseconds), timestr, url + photo, name, url + capture, name_id)
+                    toPGzdash(connection, str(milliseconds), timestr, url + "\\photo\\" +  photo, name, url + capture, name_id)
 
             time.sleep(0.01)
     connection.commit()
