@@ -11,6 +11,8 @@ import json
 from json import JSONEncoder
 import numpy
 import shutil
+import time
+import datetime
 
 
 class NumpyArrayEncoder(JSONEncoder):
@@ -25,6 +27,7 @@ connection.autocommit = True
 
 photopath = ".\\photo\\"
 newpath = ".\\new\\"
+delpath = ".\\del\\"
 
 def DB_Clear():
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
@@ -68,6 +71,10 @@ def addEmb():
             desc = str(lines[1]).replace("\n","")
             filename = str(lines[2]).replace("\n","")
             if not isExist(filename):
+                milliseconds = int(time.time() * 1000)
+                dt = datetime.datetime.fromtimestamp(milliseconds / 1000.0)
+                dt = str(dt).replace(':','_')
+                shutil.copytree(f"{newpath}{f}", f"{delpath}{str(f+'_'+dt)}")
                 cursor = connection.cursor()
                 sql_insert_with_param = """INSERT INTO public.zemb
                                       (emb, filename, name, "desc", sound)
@@ -88,6 +95,8 @@ def addEmb():
                 connection.commit()
                 print(f"Emb added: {name}")
                 shutil.rmtree(f"{newpath}{f}")
+                #shutil.move(src, dst, copy_function=copy2) - рекурсивно перемещает файл или директорию (src) в другое место (dst), и возвращает место назначения.
+                # shutil.move(f"{newpath}{f}", f"{delpath}{str(f+str(dt))}", copy_function=copy2)
                 num+=1
             else:
                 shutil.rmtree(f"{newpath}{f}")
