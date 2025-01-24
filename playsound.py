@@ -91,7 +91,8 @@ if __name__ == "__main__":
             if (uMilliseconds - value) > delta:
                 # PlayTime[num]
                 if (cMilliseconds - value) > delta:
-                    countFaceID = getCountFaceID(connection, key, cMilliseconds - delta)
+                    countFaceID = getCountFaceID(
+                        connection, key, cMilliseconds - delta)
                     if countFaceID > 1:
                         PlayTime[key] = uMilliseconds
                         filename = ""
