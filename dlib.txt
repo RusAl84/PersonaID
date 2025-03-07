@@ -1,0 +1,7 @@
+https://telemost.yandex.ru/j/78434783406572
+
+
+Make sure that your cmake and dlib are on these versions and if not install them.
+
+pip install cmake==3.25.2
+pip install dlib==19.24.2
