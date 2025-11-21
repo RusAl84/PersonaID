@@ -28,7 +28,7 @@ connection.autocommit = True
 photopath = ".\\photo\\"
 newpath = ".\\new\\"
 delpath = ".\\del\\"
-
+default_path = ".\\default\\"
 def DB_Clear():
     connection = psycopg2.connect(user="personauser", password="pgpwd4persona", host="127.0.0.1", port="5432",
                                   database="personadb")
@@ -145,8 +145,38 @@ def getDataById(emb, id):
         if item['id']==id:
             return item
 
+
+def copy_folders_with_depth(src_dir, dst_dir, max_depth=1):
+    """
+    Копирует папки с ограничением глубины вложенности
+    """
+    os.makedirs(dst_dir, exist_ok=True)
+    
+    def copy_recursive(src, dst, current_depth):
+        if current_depth > max_depth:
+            return
+            
+        for item in os.listdir(src):
+            src_path = os.path.join(src, item)
+            dst_path = os.path.join(dst, item)
+            
+            if os.path.isdir(src_path):
+                try:
+                    shutil.copytree(src_path, dst_path)
+                    print(f"Скопирована (глубина {current_depth}): {item}")
+                except FileExistsError:
+                    print(f"Пропущена (существует): {item}")
+                
+                # Рекурсивно копируем вложенные папки
+                copy_recursive(src_path, dst_path, current_depth + 1)
+    
+    copy_recursive(src_dir, dst_dir, 1)
+
+
 if __name__ == '__main__':
     DB_Clear()
+    # Копировать только папки первого уровня
+    copy_folders_with_depth(default_path, newpath, max_depth=1)
     addEmb()
     # emb = getEmb()
     # print(emb[0])
